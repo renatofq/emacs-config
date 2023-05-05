@@ -1,4 +1,5 @@
-;;;; Basic setup
+;;; package --- Emacs init file
+
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
@@ -15,8 +16,12 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+;; config path
+(setenv "PATH" (concat (getenv "PATH") ":" (substitute-in-file-name "${VOLTA_HOME}/bin")))
+; (setq exec-path (append exec-path (list (substitute-in-file-name "${VOLTA_HOME}/bin")))
 
-;;;; Package setup and additional utility functions
+
+;;;; Package setup
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; set package-user-dir to be relative to Prelude install path
@@ -30,20 +35,29 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; maximize the initial frame automatically
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;; ediff-split horizontally
 (setq ediff-split-window-function 'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; the blinking cursor is nothing, but an annoyance
 (blink-cursor-mode -1)
+
 ;; disable the annoying bell ring
 (setq ring-bell-function 'ignore)
 
 ;; disable startup screen
 (setq inhibit-startup-screen t)
 
-;; ;; nice scrolling
-(pixel-scroll-precision-mode t)
+;; nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
+
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode t))
 
 ;; mode line settings
 (line-number-mode t)
@@ -62,14 +76,15 @@
 ;; more useful frame title, that show either a file or a
 ;; buffer name (if the buffer isn't visiting a file)
 (setq frame-title-format
-      '("" invocation-name " - " (:eval (if (buffer-file-name)
-					    (abbreviate-file-name (buffer-file-name))
-					  "%b"))))
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
 ;;;; Editor setup
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 (setq-default tab-width 4)            ;; but maintain correct appearance
 
-;; Newline at end of file
+;; newline at end of file
 (setq require-final-newline t)
 
 ;; delete the selection with a keypress
@@ -85,30 +100,74 @@
 (setq global-auto-revert-non-file-buffers t)
 (global-auto-revert-mode t)
 
-
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
 ;; saveplace remembers your location in a file when saving files
-(setq save-place-file (expand-file-name "saveplace" savefile-dir))
-;; activate it for all buffers
-(save-place-mode 1)
+(use-package saveplace
+  :config
+  (setq save-place-file (expand-file-name "saveplace" savefile-dir))
+  ;; activate it for all buffers
+  (setq-default save-place t))
 
-;;;; Modeline cleanup
+;; savehist keeps track of some history
+(use-package savehist
+  :config
+  (setq savehist-additional-variables
+        ;; search entries
+        '(search-ring regexp-search-ring)
+        ;; save every minute
+        savehist-autosave-interval 60
+        ;; keep the home clean
+        savehist-file (expand-file-name "savehist" savefile-dir))
+  (savehist-mode +1))
+
+;; save recent files
+(use-package recentf
+  :config
+  (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 15
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+  (recentf-mode +1))
+
+;; bookmarks
+(use-package bookmark
+  :config
+  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
+        bookmark-save-flag 1))
+
+;; whitespace-mode config
+(use-package whitespace
+  :init
+  (dolist (hook '(prog-mode-hook text-mode-hook))
+    (add-hook hook #'whitespace-mode))
+  :config
+  (setq whitespace-line-column 80) ;; limit line length
+  (setq whitespace-style '(face tabs empty trailing lines-tail)))
+
+;; meaningful names for buffers with the same name
+(use-package uniquify
+  :init
+  (setq uniquify-buffer-name-style 'forward
+        uniquify-separator "/"
+        uniquify-after-kill-buffer-p t       ; rename after killing uniquified
+        uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
+
+;; tramp
+(use-package tramp
+  :config (setq tramp-default-method "ssh"))
+
+
+;;;; External Packages
+
+;; cleanup modeline
 (use-package diminish
   :ensure t)
 
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :init
-  (setq undo-tree-history-directory-alist
-        `((".*" . ,temporary-file-directory)))
-  (setq undo-tree-auto-save-history t)
-  :config
-  (global-undo-tree-mode))
-
-;;;; Vertico + Orderless
+;; Vertico + Orderless
 (use-package vertico
   :ensure t
   :init
@@ -121,48 +180,35 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-
-;; meaningful names for buffers with the same name
-(use-package uniquify
-  :init
-  (setq uniquify-buffer-name-style 'forward
-        uniquify-separator "/"
-        uniquify-after-kill-buffer-p t       ; rename after killing uniquified
-        uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
-
-
-;; savehist keeps track of some history
-(use-package savehist
-  :init
-  (setq savehist-additional-variables '(search-ring regexp-search-ring)  ; search entries
-        savehist-autosave-interval 60                                    ; save every minute
-        savehist-file (expand-file-name "savehist" savefile-dir))        ; keep the home clean
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
   :config
-  (savehist-mode +1))
+  (setq undo-tree-history-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq undo-tree-auto-save-history t)
+  (global-undo-tree-mode))
 
-;; save recent files
-(use-package recentf
+;; use settings from .editorconfig file when present
+(use-package editorconfig
+  :ensure t
   :init
-  (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
-      recentf-max-saved-items 500
-      recentf-max-menu-items 15
-      ;; disable recentf-cleanup on Emacs start, because it can cause
-      ;; problems with remote files
-      recentf-auto-cleanup 'never)
-  :config
-  (recentf-mode +1))
+  (editorconfig-mode 1)
+  (diminish 'editorconfig-mode))
 
-
-;; bookmarks
-(use-package bookmark
-  :init
-  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
-      bookmark-save-flag 1))
-
-;;;; Magit
+;; magit
 (use-package magit
   :ensure t)
 
+;; eglot
+(use-package eglot
+  :ensure t)
+
+;; silver searcher
+(use-package ag
+  :ensure t)
+
+;; diff-hl
 (use-package diff-hl
   :ensure t
   :commands (diff-hl-dired-mode diff-hl-magit-post-refresh)
@@ -171,30 +217,7 @@
   :config
   (global-diff-hl-mode +1))
 
-;;;; Theme
-(use-package zenburn-theme
-  :ensure t
-  :config
-  (load-theme 'zenburn t))
-
-;;;; smartparens
-(use-package smartparens
-  :ensure t
-  :diminish smartparens-mode
-  :init
-  (smartparens-global-mode))
-
-;;;; Cobol
-(use-package cobol-mode
-  :mode "\\.cbl\\'")
-
-;;; Typescript
-(use-package typescript-ts-mode
-  :mode "\\.ts\\'")
-
-(use-package tramp
-  :config (setq tramp-default-method "ssh"))
-;;;; Crux
+;; crux
 (use-package crux
   :ensure t
   :bind (("C-k" . crux-smart-kill-line)
@@ -207,3 +230,65 @@
   (crux-with-region-or-buffer untabify)
   (crux-with-region-or-line comment-or-uncomment-region)
   (crux-with-region-or-sexp-or-line kill-region))
+
+;; theme
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
+
+;; smartparens
+(use-package smartparens
+  :ensure t
+  :diminish smartparens-mode
+  :init
+  (smartparens-global-mode))
+
+;; company
+(use-package company
+  :ensure t
+  :diminish company-mode
+  :init
+  (add-hook 'prog-mode-hook 'company-mode)
+  :config
+  (setq company-idle-delay 0.5)
+  (setq company-show-numbers t)
+  (setq company-tooltip-limit 10)
+  (setq company-minimum-prefix-length 2)
+  (setq company-tooltip-align-annotations t)
+  ;; invert the navigation direction if the the completion popup-isearch-match
+  ;; is displayed on top (happens near the bottom of windows)
+  (setq company-tooltip-flip-when-above t))
+
+;;;; Language specific settings
+
+;; Cobol
+(use-package cobol-mode
+  :mode "\\.cbl\\'")
+
+;; Typescript
+(use-package typescript-ts-mode
+  :mode "\\.ts\\'"
+  :config
+  (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
+
+;;;; cc-mode
+(use-package cc-mode
+  :config
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (setq c-default-style "k&r"
+                    tab-width 4
+                    c-basic-offset 4))))
+
+;; yaml
+(use-package yaml-ts-mode
+  :mode "\\.ya?ml\\'")
+
+(use-package java-ts-mode
+  :mode "\\.java\\'"
+  :config
+  (add-hook 'java-ts-mode-hook 'eglot-ensure))
+
+(provide 'init)
+;;; init.el ends here
