@@ -1,4 +1,4 @@
-;;; package --- Emacs init file
+;; package --- Emacs init file
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -21,8 +21,6 @@
         (concat (getenv "PATH")
                 ":" (substitute-in-file-name "${HOME}/.local/bin")
                 ":" (substitute-in-file-name "${VOLTA_HOME}/bin")))
-; (setq exec-path (append exec-path (list (substitute-in-file-name "${VOLTA_HOME}/bin")))
-
 
 ;;;; Package setup
 (require 'package)
@@ -153,7 +151,15 @@
     (add-hook hook #'whitespace-mode))
   :config
   (setq whitespace-line-column 80) ;; limit line length
-  (setq whitespace-style '(face tabs empty trailing lines-tail)))
+  (setq whitespace-style '(face tabs empty trailing)))
+
+(use-package flyspell
+  :config
+  (setq ispell-program-name "aspell" ; use aspell instead of ispell
+        ispell-extra-args '("--sug-mode=ultra"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
+  (add-hook 'text-mode-hook #'flyspell-mode)
+  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
 
 ;; meaningful names for buffers with the same name
 (use-package uniquify
@@ -166,6 +172,9 @@
 ;; tramp
 (use-package tramp
   :config (setq tramp-default-method "ssh"))
+
+;; replace buffer-menu with ibuffer
+(global-set-key (kbd "C-x C-b") #'ibuffer)
 
 ;; org-mode
 (use-package org
@@ -269,10 +278,10 @@
 
 ;; theme
 (load-theme 'modus-operandi t)
-;; (use-package zenburn-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'zenburn t))
+
+;; Olivetti mode
+(use-package olivetti
+  :ensure t)
 
 ;; smartparens
 (use-package smartparens
@@ -317,6 +326,25 @@
               (setq c-default-style "k&r"
                     tab-width 4
                     c-basic-offset 4))))
+
+(use-package paredit
+  :ensure t)
+
+;;;; Scheme
+(use-package geiser-guile
+  :ensure t)
+
+(use-package scheme
+  :requires paredit
+  :diminish paredit
+  :config
+  (add-hook 'scheme-mode-hook
+            (lambda ()
+              #'enable-paredit-mode)))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((scheme . t)))
 
 ;; yaml
 (use-package yaml-ts-mode
