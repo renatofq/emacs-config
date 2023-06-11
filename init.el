@@ -17,7 +17,10 @@
 (load custom-file)
 
 ;; config path
-(setenv "PATH" (concat (getenv "PATH") ":" (substitute-in-file-name "${VOLTA_HOME}/bin")))
+(setenv "PATH"
+        (concat (getenv "PATH")
+                ":" (substitute-in-file-name "${HOME}/.local/bin")
+                ":" (substitute-in-file-name "${VOLTA_HOME}/bin")))
 ; (setq exec-path (append exec-path (list (substitute-in-file-name "${VOLTA_HOME}/bin")))
 
 
@@ -37,6 +40,10 @@
 
 ;; maximize the initial frame automatically
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; font
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono-13"))
+(add-to-list 'default-frame-alist '(line-spacing . 0.1))
 
 ;; ediff-split horizontally
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -160,8 +167,37 @@
 (use-package tramp
   :config (setq tramp-default-method "ssh"))
 
+;; org-mode
+(use-package org
+  :init
+  (setq org-directory "~/Documentos/org")
+  (setq org-default-notes-file (concat org-directory "/notas.org"))
+  (setq org-capture-templates
+        '(("t" "Todo" entry
+           (file+headline (concat org-directory "/tarefas.org") "Tarefas")
+           "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry
+           (file+datetree (concat org-directory "/diario.org"))
+           "* %?\nEm %U\n  %i\n  %a"))))
 
-;;;; External Packages
+;; denote - zettlekasten package
+(use-package denote
+  :ensure t
+  :init
+  (setq denote-directory (expand-file-name "~/Documentos/zettelkasten")
+        denote-known-keywords '("emacs" "programação"))
+  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
+  :config
+  ;; org capture with denote
+  (setq denote-org-capture-specifiers "%l\n%i\n%?")
+  (add-to-list 'org-capture-templates
+               '("n" "New note (with denote.el)" plain
+                 (file denote-last-path)
+                 #'denote-org-capture
+                 :no-save t
+                 :immediate-finish nil
+                 :kill-buffer t
+                 :jump-to-captured t)))
 
 ;; cleanup modeline
 (use-package diminish
@@ -232,10 +268,11 @@
   (crux-with-region-or-sexp-or-line kill-region))
 
 ;; theme
-(use-package zenburn-theme
-  :ensure t
-  :config
-  (load-theme 'zenburn t))
+(load-theme 'modus-operandi t)
+;; (use-package zenburn-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'zenburn t))
 
 ;; smartparens
 (use-package smartparens
@@ -285,10 +322,18 @@
 (use-package yaml-ts-mode
   :mode "\\.ya?ml\\'")
 
+;; Java
 (use-package java-ts-mode
   :mode "\\.java\\'"
   :config
   (add-hook 'java-ts-mode-hook 'eglot-ensure))
+
+;; PlantUML
+(use-package plantuml-mode
+  :mode "\\.plantuml\\'"
+  :init
+  (setq plantuml-default-exec-mode 'jar
+        plantuml-jar-path (substitute-in-file-name "${HOME}/.local/lib/plantuml.jar")))
 
 (provide 'init)
 ;;; init.el ends here
