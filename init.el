@@ -158,8 +158,7 @@
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra"))
   (add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
-  (add-hook 'text-mode-hook #'flyspell-mode)
-  (add-hook 'prog-mode-hook #'flyspell-prog-mode))
+  (add-hook 'text-mode-hook #'flyspell-mode))
 
 ;; meaningful names for buffers with the same name
 (use-package uniquify
@@ -183,10 +182,10 @@
   (setq org-default-notes-file (concat org-directory "/notas.org"))
   (setq org-capture-templates
         '(("t" "Todo" entry
-           (file+headline (concat org-directory "/tarefas.org") "Tarefas")
+           (file+headline "~/Documentos/org/tarefas.org" "Tarefas")
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry
-           (file+datetree (concat org-directory "/diario.org"))
+           (file+datetree "~/Documentos/org/diario.org")
            "* %?\nEm %U\n  %i\n  %a"))))
 
 ;; denote - zettlekasten package
@@ -337,14 +336,14 @@
 (use-package scheme
   :requires paredit
   :diminish paredit
+  :init
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((scheme . t)))
   :config
   (add-hook 'scheme-mode-hook
             (lambda ()
               #'enable-paredit-mode)))
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((scheme . t)))
 
 ;; yaml
 (use-package yaml-ts-mode
