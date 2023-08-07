@@ -108,6 +108,28 @@
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
+;; save-as functions
+(defun save-as-and-switch (filename)
+  "Clone the current buffer and switch to the clone"
+  (interactive "FCopy and switch to file: ")
+  (save-restriction
+    (widen)
+    (write-region (point-min) (point-max) filename nil nil nil 'confirm))
+  (find-file filename))
+
+(defun save-as-do-not-switch (filename)
+  "Clone the current buffer but don't switch to the clone"
+  (interactive "FCopy (without switching) to file:")
+  (write-region (point-min) (point-max) filename)
+  (find-file-noselect filename))
+
+(defun save-as (filename)
+  "Prompt user whether to switch to the clone."
+  (interactive "FCopy to file: ")
+  (if (y-or-n-p "Switch to new file?")
+    (save-as-and-switch filename)
+    (save-as-do-not-switch filename)))
+
 ;; saveplace remembers your location in a file when saving files
 (use-package saveplace
   :config
@@ -158,7 +180,7 @@
   (setq ispell-program-name "aspell" ; use aspell instead of ispell
         ispell-extra-args '("--sug-mode=ultra"))
   (add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
-  (add-hook 'text-mode-hook #'flyspell-mode))
+  (add-hook 'text-org-hook #'flyspell-mode))
 
 ;; meaningful names for buffers with the same name
 (use-package uniquify
@@ -344,6 +366,29 @@
   (add-hook 'scheme-mode-hook
             (lambda ()
               #'enable-paredit-mode)))
+
+;;;; Clojure
+(use-package rainbow-delimiters
+  :ensure t)
+
+(use-package clojure-mode
+  :ensure t
+  :config
+  (add-hook 'clojure-mode-hook #'paredit-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+
+(use-package inf-clojure
+  :ensure t
+  :config
+  (add-hook 'inf-clojure-mode-hook #'paredit-mode)
+  (add-hook 'inf-clojure-mode-hook #'rainbow-delimiters-mode))
+
+(use-package cider
+  :ensure t
+  :config
+  (setq nrepl-log-messages t)
+  (add-hook 'cider-repl-mode-hook #'paredit-mode)
+  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode))
 
 ;; yaml
 (use-package yaml-ts-mode
