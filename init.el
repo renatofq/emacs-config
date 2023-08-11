@@ -217,15 +217,40 @@
 
   ;; default identation on code blocks
   (setq org-edit-src-content-indentation 0)
-  ;; prevents org-mode from trying to match <>
-  (defun org-syntax-table-modify ()
-    "Modify `org-mode-syntax-table' for the current org buffer."
-    (modify-syntax-entry ?< "." org-mode-syntax-table)
-    (modify-syntax-entry ?> "." org-mode-syntax-table))
-  (add-hook 'org-mode-hook #'org-syntax-table-modify)
+
+  ;; org-babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((scheme . t)
+     (emacs-lisp . nil)
+     (dot . t)))
   (defun my-org-confirm-babel-evaluate (lang body)
-    (not (member lang '("scheme"))))
-  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate))
+    (not (member lang '("scheme" "dot"))))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+  ;; fix mismatch of < and > inside code blocks
+  (defun org-mode-<>-syntax-fix (start end)
+    "Change syntax of characters ?< and ?> to symbol within source code blocks."
+    (let ((case-fold-search t))
+      (when (eq major-mode 'org-mode)
+        (save-excursion
+          (goto-char start)
+          (while (re-search-forward "<\\|>" end t)
+            (when (save-excursion
+                    (and
+                     (re-search-backward "[[:space:]]*#\\+\\(begin\\|end\\)_src\\_>" nil t)
+                     (string-equal (downcase (match-string 1)) "begin")))
+              ;; This is a < or > in an org-src block
+              (put-text-property (point) (1- (point))
+                                 'syntax-table (string-to-syntax "_"))))))))
+
+  (defun org-setup-<>-syntax-fix ()
+    "Setup for characters ?< and ?> in source code blocks."
+    (make-local-variable 'syntax-propertize-function)
+    (setq syntax-propertize-function 'org-mode-<>-syntax-fix)
+    (syntax-propertize (point-max)))
+
+  (add-hook 'org-mode-hook #'org-setup-<>-syntax-fix))
 
 ;; denote - zettlekasten package
 (use-package denote
@@ -327,6 +352,15 @@
   :diminish smartparens-mode
   :init
   (smartparens-global-mode))
+
+;; yasnippet
+(use-package yasnippet
+  :ensure t
+  :diminish yas
+  :init
+  (setq yas-snippet-dirs
+      (list (expand-file-name "snippets" user-emacs-directory)))
+  (yas-global-mode 1))
 
 ;; company
 (use-package company
