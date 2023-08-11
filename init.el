@@ -194,6 +194,11 @@
 (use-package tramp
   :config (setq tramp-default-method "ssh"))
 
+;; re-nuilder
+(use-package re-builder
+  :init
+  (setq reb-re-syntax 'string))
+
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 
@@ -208,7 +213,19 @@
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry
            (file+datetree "~/Documentos/org/diario.org")
-           "* %?\nEm %U\n  %i\n  %a"))))
+           "* %?\nEm %U\n  %i\n  %a")))
+
+  ;; default identation on code blocks
+  (setq org-edit-src-content-indentation 0)
+  ;; prevents org-mode from trying to match <>
+  (defun org-syntax-table-modify ()
+    "Modify `org-mode-syntax-table' for the current org buffer."
+    (modify-syntax-entry ?< "." org-mode-syntax-table)
+    (modify-syntax-entry ?> "." org-mode-syntax-table))
+  (add-hook 'org-mode-hook #'org-syntax-table-modify)
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (member lang '("scheme"))))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate))
 
 ;; denote - zettlekasten package
 (use-package denote
@@ -358,10 +375,6 @@
 (use-package scheme
   :requires paredit
   :diminish paredit
-  :init
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((scheme . t)))
   :config
   (add-hook 'scheme-mode-hook
             (lambda ()
