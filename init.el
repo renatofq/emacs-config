@@ -359,7 +359,10 @@
   (crux-with-region-or-sexp-or-line kill-region))
 
 ;; theme
-(load-theme 'modus-operandi t)
+(use-package 'modus-operandi
+  :ensure t
+  :config
+  (load-theme 'modus-operandi t))
 
 ;; Olivetti mode
 (use-package olivetti
@@ -397,8 +400,72 @@
   ;; is displayed on top (happens near the bottom of windows)
   (setq company-tooltip-flip-when-above t))
 
-;;;; Language specific settings
+;;;; Language specific settings ------------------------------------------------
+;; Lisp family ----------------
+(use-package paredit
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+  ;; enable in the *scratch* buffer
+  (add-hook 'lisp-interaction-mode-hook #'paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
+  (diminish 'paredit-mode "()"))
 
+(use-package rainbow-delimiters
+  :ensure t)
+
+;; Emacs Lisp
+(use-package elisp-mode
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+
+;; Scheme
+(use-package geiser-guile
+  :ensure t)
+
+(use-package scheme
+  :requires paredit
+  :diminish paredit
+  :config
+  (add-hook 'scheme-mode-hook #'paredit-mode)
+  (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
+
+;; Clojure
+(use-package clojure-ts-mode
+  :ensure t
+  :config
+  (add-hook 'clojure-ts-mode-hook #'paredit-mode)
+  (add-hook 'clojure-ts-mode-hook #'rainbow-delimiters-mode))
+
+(use-package clojure-ts-mode
+  :ensure t
+  ;; :init
+  ;; (push '(clojure-mode . clojure-ts-mode) major-mode-remap-alist)
+  :config
+  (add-hook 'clojure-ts-mode-hook #'paredit-mode)
+  (add-hook 'clojure-ts-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-ts-mode-hook #'eglot-ensure))
+
+(use-package inf-clojure
+  :ensure t
+  :config
+  (add-hook 'inf-clojure-mode-hook #'paredit-mode)
+  (add-hook 'inf-clojure-mode-hook #'rainbow-delimiters-mode))
+
+(use-package cider
+  :ensure t
+  :config
+  (setq nrepl-log-messages t)
+  (setq cider-use-overlays nil)
+  (add-hook 'cider-repl-mode-hook #'paredit-mode)
+  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+  ;; (add-hook 'cider-mode-hook
+  ;;           #'(lambda ()
+  ;;               (setq cider-eldoc-display-for-symbol-at-point nil)
+  ;;               (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)))
+  )
+
+;; Other languages --------------
 ;; Cobol
 (use-package cobol-mode
   :mode "\\.cbl\\'")
@@ -418,43 +485,6 @@
                     tab-width 4
                     c-basic-offset 4))))
 
-(use-package paredit
-  :ensure t)
-
-;;;; Scheme
-(use-package geiser-guile
-  :ensure t)
-
-(use-package scheme
-  :requires paredit
-  :diminish paredit
-  :config
-  (add-hook 'scheme-mode-hook
-            (lambda ()
-              #'enable-paredit-mode)))
-
-;;;; Clojure
-(use-package rainbow-delimiters
-  :ensure t)
-
-(use-package clojure-mode
-  :ensure t
-  :config
-  (add-hook 'clojure-mode-hook #'paredit-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
-
-(use-package inf-clojure
-  :ensure t
-  :config
-  (add-hook 'inf-clojure-mode-hook #'paredit-mode)
-  (add-hook 'inf-clojure-mode-hook #'rainbow-delimiters-mode))
-
-(use-package cider
-  :ensure t
-  :config
-  (setq nrepl-log-messages t)
-  (add-hook 'cider-repl-mode-hook #'paredit-mode)
-  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode))
 
 ;; yaml
 (use-package yaml-ts-mode
@@ -462,9 +492,7 @@
 
 ;; Java
 (use-package java-ts-mode
-  :mode "\\.java\\'"
-  :config
-  (add-hook 'java-ts-mode-hook 'eglot-ensure))
+  :mode "\\.java\\'")
 
 ;; PlantUML
 (use-package plantuml-mode
