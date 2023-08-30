@@ -359,7 +359,7 @@
   (crux-with-region-or-sexp-or-line kill-region))
 
 ;; theme
-(use-package 'modus-operandi
+(use-package modus-themes
   :ensure t
   :config
   (load-theme 'modus-operandi t))
@@ -431,26 +431,11 @@
   (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
 
 ;; Clojure
-(use-package clojure-ts-mode
+(use-package clojure-mode
   :ensure t
   :config
-  (add-hook 'clojure-ts-mode-hook #'paredit-mode)
-  (add-hook 'clojure-ts-mode-hook #'rainbow-delimiters-mode))
-
-(use-package clojure-ts-mode
-  :ensure t
-  ;; :init
-  ;; (push '(clojure-mode . clojure-ts-mode) major-mode-remap-alist)
-  :config
-  (add-hook 'clojure-ts-mode-hook #'paredit-mode)
-  (add-hook 'clojure-ts-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'clojure-ts-mode-hook #'eglot-ensure))
-
-(use-package inf-clojure
-  :ensure t
-  :config
-  (add-hook 'inf-clojure-mode-hook #'paredit-mode)
-  (add-hook 'inf-clojure-mode-hook #'rainbow-delimiters-mode))
+  (add-hook 'clojure-mode-hook #'paredit-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
 
 (use-package cider
   :ensure t
