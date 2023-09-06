@@ -1,26 +1,10 @@
 ;; package --- Emacs init file
 
-;; Always load newest byte code
-(setq load-prefer-newer t)
-
-;; reduce the frequency of garbage collection by making it happen on
-;; each 10MB of allocated data (the default is on every 0.76MB)
-(setq gc-cons-threshold 10000000)
-
-;; warn when opening files bigger than 100MB
-(setq large-file-warning-threshold 100000000)
-
 (defvar savefile-dir (expand-file-name "savefile" user-emacs-directory)
   "This folder stores all the automatically generated save/history-files.")
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
-
-;; config path
-(setenv "PATH"
-        (concat (getenv "PATH")
-                ":" (substitute-in-file-name "${HOME}/.local/bin")
-                ":" (substitute-in-file-name "${VOLTA_HOME}/bin")))
 
 ;;;; Package setup
 (require 'package)
@@ -33,7 +17,11 @@
 ;;;; UX setup
 ;; disable tool-bar menu-bar and scroll-bar
 (tool-bar-mode -1)
-(menu-bar-mode -1)
+
+;; I'll experiment menu-bar for a while
+;; (menu-bar-mode -1)
+
+;; Disable scroll-bar
 (scroll-bar-mode -1)
 
 ;; maximize the initial frame automatically
@@ -85,6 +73,9 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
+;; Move through windows with Shift-<arrow keys>
+(windmove-default-keybindings)
+
 ;;;; Editor setup
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 (setq-default tab-width 4)            ;; but maintain correct appearance
@@ -108,6 +99,9 @@
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
+;; replace buffer-menu with ibuffer
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+
 ;; save-as functions
 (defun save-as-and-switch (filename)
   "Clone the current buffer and switch to the clone"
@@ -129,6 +123,12 @@
   (if (y-or-n-p "Switch to new file?")
     (save-as-and-switch filename)
     (save-as-do-not-switch filename)))
+
+;; which-key: shows a popup of available keybindings when typing a long key
+;; sequence (e.g. C-x ...)
+(use-package which-key
+  :config
+  (which-key-mode))
 
 ;; saveplace remembers your location in a file when saving files
 (use-package saveplace
@@ -198,9 +198,6 @@
 (use-package re-builder
   :init
   (setq reb-re-syntax 'string))
-
-;; replace buffer-menu with ibuffer
-(global-set-key (kbd "C-x C-b") #'ibuffer)
 
 ;; cleanup modeline
 (use-package diminish
@@ -296,25 +293,24 @@
 
   (add-hook 'org-mode-hook #'org-setup-<>-syntax-fix))
 
-;; denote - zettlekasten package
-(use-package denote
-  :ensure t
-  :init
-  (setq denote-directory (expand-file-name "~/Documentos/zettelkasten")
-        denote-known-keywords '("emacs" "programação"))
-  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
-  :config
-  ;; org capture with denote
-  (setq denote-org-capture-specifiers "%l\n%i\n%?")
-  (add-to-list 'org-capture-templates
-               '("n" "New note (with denote.el)" plain
-                 (file denote-last-path)
-                 #'denote-org-capture
-                 :no-save t
-                 :immediate-finish nil
-                 :kill-buffer t
-                 :jump-to-captured t)))
-
+;; ;; denote - zettlekasten package
+;; (use-package denote
+;;   :ensure t
+;;   :init
+;;   (setq denote-directory (expand-file-name "~/Documentos/zettelkasten")
+;;         denote-known-keywords '("emacs" "programação"))
+;;   (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
+;;   :config
+;;   ;; org capture with denote
+;;   (setq denote-org-capture-specifiers "%l\n%i\n%?")
+;;   (add-to-list 'org-capture-templates
+;;                '("n" "New note (with denote.el)" plain
+;;                  (file denote-last-path)
+;;                  #'denote-org-capture
+;;                  :no-save t
+;;                  :immediate-finish nil
+;;                  :kill-buffer t
+;;                  :jump-to-captured t)))
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
@@ -384,21 +380,33 @@
       (list (expand-file-name "snippets" user-emacs-directory)))
   (yas-global-mode 1))
 
-;; company
-(use-package company
+;; Popup completion-at-point
+(use-package corfu
   :ensure t
-  :diminish company-mode
   :init
-  (add-hook 'prog-mode-hook 'company-mode)
+  (global-corfu-mode)
+  :bind
+  (:map corfu-map
+        ("SPC" . corfu-insert-separator)
+        ("C-n" . corfu-next)
+        ("C-p" . corfu-previous)))
+
+;; Part of corfu
+(use-package corfu-popupinfo
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.25 . 0.1))
+  (corfu-popupinfo-hide nil)
   :config
-  (setq company-idle-delay 0.5)
-  (setq company-show-numbers t)
-  (setq company-tooltip-limit 10)
-  (setq company-minimum-prefix-length 2)
-  (setq company-tooltip-align-annotations t)
-  ;; invert the navigation direction if the the completion popup-isearch-match
-  ;; is displayed on top (happens near the bottom of windows)
-  (setq company-tooltip-flip-when-above t))
+  (corfu-popupinfo-mode))
+
+;; Make corfu popup come up in terminal overlay
+(use-package corfu-terminal
+  :if (not (display-graphic-p))
+  :ensure t
+  :config
+  (corfu-terminal-mode))
 
 ;;;; Language specific settings ------------------------------------------------
 ;; Lisp family ----------------
@@ -439,11 +447,13 @@
 
 (use-package cider
   :ensure t
+  :requires clj-refactor
   :config
   (setq nrepl-log-messages t)
   (setq cider-use-overlays nil)
   (add-hook 'cider-repl-mode-hook #'paredit-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'cider-repl-mode-hook #'clj-refactor-mode)
   ;; (add-hook 'cider-mode-hook
   ;;           #'(lambda ()
   ;;               (setq cider-eldoc-display-for-symbol-at-point nil)
@@ -469,7 +479,6 @@
               (setq c-default-style "k&r"
                     tab-width 4
                     c-basic-offset 4))))
-
 
 ;; yaml
 (use-package yaml-ts-mode
