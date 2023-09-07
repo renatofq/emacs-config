@@ -168,6 +168,7 @@
 
 ;; whitespace-mode config
 (use-package whitespace
+  :diminish whitespace-mode
   :init
   (dolist (hook '(prog-mode-hook text-mode-hook))
     (add-hook hook #'whitespace-mode))
@@ -374,7 +375,7 @@
 ;; yasnippet
 (use-package yasnippet
   :ensure t
-  :diminish yas
+  :diminish yas-minor-mode
   :init
   (setq yas-snippet-dirs
       (list (expand-file-name "snippets" user-emacs-directory)))
