@@ -1,18 +1,8 @@
 ;; package --- Emacs init file
 
-(defvar savefile-dir (expand-file-name "savefile" user-emacs-directory)
-  "This folder stores all the automatically generated save/history-files.")
-
+;; configure custom file and load it's values first
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
-
-;;;; Package setup
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; set package-user-dir to be relative to Prelude install path
-(setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
-(package-initialize)
-
 
 ;;;; UX setup
 ;; disable tool-bar menu-bar and scroll-bar
@@ -124,16 +114,22 @@
     (save-as-and-switch filename)
     (save-as-do-not-switch filename)))
 
-;; which-key: shows a popup of available keybindings when typing a long key
-;; sequence (e.g. C-x ...)
-(use-package which-key
+;; define a unified place to all generated/data
+(defun varfile-name (filename)
+  "This function returns the file path for a 'varfile'. A generated/data file
+   used by different modes that clutter 'user-emacs-directory' and should not be
+   versioned."
+  (file-name-concat user-emacs-directory "varfile" filename))
+
+;; project
+(use-package project
   :config
-  (which-key-mode))
+  (setq project-list-file (varfile-name "projects")))
 
 ;; saveplace remembers your location in a file when saving files
 (use-package saveplace
   :config
-  (setq save-place-file (expand-file-name "saveplace" savefile-dir))
+  (setq save-place-file (varfile-name "saveplace"))
   ;; activate it for all buffers
   (setq-default save-place t))
 
@@ -146,13 +142,13 @@
         ;; save every minute
         savehist-autosave-interval 60
         ;; keep the home clean
-        savehist-file (expand-file-name "savehist" savefile-dir))
+        savehist-file (varfile-name "savehist"))
   (savehist-mode +1))
 
 ;; save recent files
 (use-package recentf
   :config
-  (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
+  (setq recentf-save-file (varfile-name "recentf")
         recentf-max-saved-items 500
         recentf-max-menu-items 15
         ;; disable recentf-cleanup on Emacs start, because it can cause
@@ -163,8 +159,14 @@
 ;; bookmarks
 (use-package bookmark
   :config
-  (setq bookmark-default-file (expand-file-name "bookmarks" savefile-dir)
+  (setq bookmark-default-file (varfile-name "bookmarks")
         bookmark-save-flag 1))
+
+;; tramp
+(use-package tramp
+  :config (setq tramp-default-method "ssh"
+                tramp-persistency-file-name (varfile-name "tramp")))
+
 
 ;; whitespace-mode config
 (use-package whitespace
@@ -191,14 +193,18 @@
         uniquify-after-kill-buffer-p t       ; rename after killing uniquified
         uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
 
-;; tramp
-(use-package tramp
-  :config (setq tramp-default-method "ssh"))
-
 ;; re-nuilder
 (use-package re-builder
   :init
   (setq reb-re-syntax 'string))
+
+;; which-key: shows a popup of available keybindings when typing a long key
+;; sequence (e.g. C-x ...)
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
 
 ;; cleanup modeline
 (use-package diminish
@@ -328,10 +334,6 @@
 (use-package eglot
   :ensure t)
 
-;; silver searcher
-(use-package ag
-  :ensure t)
-
 ;; diff-hl
 (use-package diff-hl
   :ensure t
@@ -360,10 +362,6 @@
   :ensure t
   :config
   (load-theme 'modus-operandi t))
-
-;; Olivetti mode
-(use-package olivetti
-  :ensure t)
 
 ;; smartparens
 (use-package smartparens
