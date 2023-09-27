@@ -172,7 +172,6 @@
   :config (setq tramp-default-method "ssh"
                 tramp-persistency-file-name (varfile-name "tramp")))
 
-
 ;; whitespace-mode config
 (use-package whitespace
   :diminish whitespace-mode
@@ -203,30 +202,22 @@
   :init
   (setq reb-re-syntax 'string))
 
-;; which-key: shows a popup of available keybindings when typing a long key
-;; sequence (e.g. C-x ...)
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
-
-
 ;; cleanup modeline
 (use-package diminish
   :ensure t)
 
-;; Vertico, Orderless and Marginalia
-(use-package vertico
-  :ensure t
-  :init
-  (vertico-mode))
-
+;; Orderless, Vertico and Marginalia
 (use-package orderless
   :ensure t
   :init
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode))
 
 ;; Enable rich annotations using the Marginalia package
 (use-package marginalia
@@ -235,15 +226,83 @@
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.
   :bind (:map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
+              ("M-A" . marginalia-cycle))
 
   ;; The :init section is always executed.
   :init
-
   ;; Marginalia must be activated in the :init section of use-package such that
   ;; the mode gets enabled right away. Note that this forces loading the
   ;; package.
   (marginalia-mode))
+
+
+;; Corfu, Cape and Tempel
+(use-package corfu
+  :ensure t
+  :init
+  (global-corfu-mode)
+  :bind
+  (:map corfu-map
+        ("SPC" . corfu-insert-separator)
+        ("C-n" . corfu-next)
+        ("C-p" . corfu-previous)))
+
+;; Part of corfu
+(use-package corfu-popupinfo
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.25 . 0.1))
+  (corfu-popupinfo-hide nil)
+  :config
+  (corfu-popupinfo-mode))
+
+;; Make corfu popup come up in terminal overlay
+(use-package corfu-terminal
+  :if (not (display-graphic-p))
+  :ensure t
+  :config
+  (corfu-terminal-mode))
+
+(use-package cape
+  :ensure t
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file))
+
+; Configure Tempel
+(use-package tempel
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
+
+  :init
+  (setq tempel-path (varfile-name "templates"))
+  ;; Setup completion at point
+  (defun user/tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
+  (add-hook 'text-mode-hook 'user/tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+)
 
 ;; undo-tree
 (use-package undo-tree
@@ -254,6 +313,14 @@
         `((".*" . ,temporary-file-directory)))
   (setq undo-tree-auto-save-history t)
   (global-undo-tree-mode))
+
+;; which-key: shows a popup of available keybindings when typing a long key
+;; sequence (e.g. C-x ...)
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :config
+  (which-key-mode))
 
 ;; org-mode
 (use-package org
@@ -277,12 +344,12 @@
    '((scheme . t)
      (emacs-lisp . nil)
      (dot . t)))
-  (defun my-org-confirm-babel-evaluate (lang body)
+  (defun user/org-confirm-babel-evaluate (lang body)
     (not (member lang '("scheme" "dot"))))
-  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+  (setq org-confirm-babel-evaluate 'user/org-confirm-babel-evaluate)
 
   ;; fix mismatch of < and > inside code blocks
-  (defun org-mode-<>-syntax-fix (start end)
+  (defun user/org-mode-<>-syntax-fix (start end)
     "Change syntax of characters ?< and ?> to symbol within source code blocks."
     (let ((case-fold-search t))
       (when (eq major-mode 'org-mode)
@@ -297,13 +364,13 @@
               (put-text-property (point) (1- (point))
                                  'syntax-table (string-to-syntax "_"))))))))
 
-  (defun org-setup-<>-syntax-fix ()
+  (defun user/org-setup-<>-syntax-fix ()
     "Setup for characters ?< and ?> in source code blocks."
     (make-local-variable 'syntax-propertize-function)
-    (setq syntax-propertize-function 'org-mode-<>-syntax-fix)
+    (setq syntax-propertize-function 'user/org-mode-<>-syntax-fix)
     (syntax-propertize (point-max)))
 
-  (add-hook 'org-mode-hook #'org-setup-<>-syntax-fix))
+  (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix))
 
 ;; ;; denote - zettlekasten package
 ;; (use-package denote
@@ -337,7 +404,18 @@
 
 ;; eglot
 (use-package eglot
-  :ensure t)
+  :ensure t
+  :init
+  (setq completion-category-overrides '((eglot (styles orderless))))
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+  (defun user/eglot-capf ()
+  (setq-local completion-at-point-functions
+              (list (cape-super-capf
+                     #'eglot-completion-at-point
+                     #'tempel-expand
+                     #'cape-file))))
+
+  (add-hook 'eglot-managed-mode-hook #'user/eglot-capf))
 
 ;; diff-hl
 (use-package diff-hl
@@ -359,8 +437,7 @@
   :config
   (crux-with-region-or-buffer indent-region)
   (crux-with-region-or-buffer untabify)
-  (crux-with-region-or-line comment-or-uncomment-region)
-  (crux-with-region-or-sexp-or-line kill-region))
+  (crux-with-region-or-line comment-or-uncomment-region))
 
 ;; theme
 (use-package modus-themes
@@ -375,44 +452,16 @@
   :init
   (smartparens-global-mode))
 
-;; yasnippet
-(use-package yasnippet
-  :ensure t
-  :diminish yas-minor-mode
-  :init
-  (setq yas-snippet-dirs
-      (list (expand-file-name "snippets" user-emacs-directory)))
-  (yas-global-mode 1))
-
-;; Popup completion-at-point
-(use-package corfu
-  :ensure t
-  :init
-  (global-corfu-mode)
-  :bind
-  (:map corfu-map
-        ("SPC" . corfu-insert-separator)
-        ("C-n" . corfu-next)
-        ("C-p" . corfu-previous)))
-
-;; Part of corfu
-(use-package corfu-popupinfo
-  :after corfu
-  :hook (corfu-mode . corfu-popupinfo-mode)
-  :custom
-  (corfu-popupinfo-delay '(0.25 . 0.1))
-  (corfu-popupinfo-hide nil)
-  :config
-  (corfu-popupinfo-mode))
-
-;; Make corfu popup come up in terminal overlay
-(use-package corfu-terminal
-  :if (not (display-graphic-p))
-  :ensure t
-  :config
-  (corfu-terminal-mode))
-
 ;;;; Language specific settings ------------------------------------------------
+;; Enable tree-sitter for some major modes
+(use-package emacs
+  :config
+  (setq major-mode-remap-alist
+        '((json-mode . json-ts-mode)
+          (yaml-mode . yaml-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode))))
+
 ;; Lisp family ----------------
 (use-package paredit
   :ensure t
@@ -471,7 +520,6 @@
 
 ;; Typescript
 (use-package typescript-ts-mode
-  :mode "\\.ts\\'"
   :config
   (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
 
@@ -484,14 +532,6 @@
                     tab-width 4
                     c-basic-offset 4))))
 
-;; yaml
-(use-package yaml-ts-mode
-  :mode "\\.ya?ml\\'")
-
-;; Java
-(use-package java-ts-mode
-  :mode "\\.java\\'")
-
 ;; PlantUML
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
@@ -499,5 +539,18 @@
   (setq plantuml-default-exec-mode 'jar
         plantuml-jar-path (substitute-in-file-name "${HOME}/.local/lib/plantuml.jar")))
 
+
+(defun user/load-all-in-directory (dir)
+  "`load' all elisp libraries in directory DIR which are not already loaded."
+  (interactive "D")
+  (let ((libraries-loaded (mapcar #'file-name-sans-extension
+                                  (delq nil (mapcar #'car load-history)))))
+    (dolist (file (directory-files dir t ".+\\.elc?$"))
+      (let ((library (file-name-sans-extension file)))
+        (unless (member library libraries-loaded)
+          (load library nil t)
+          (push library libraries-loaded))))))
+
+(user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
 (provide 'init)
 ;;; init.el ends here
