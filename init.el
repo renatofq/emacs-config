@@ -42,6 +42,11 @@
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode t))
 
+;; disable suspend in graphical mode
+(when (display-graphic-p)
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z")))
+
 ;; mode line settings
 (line-number-mode t)
 (column-number-mode t)
