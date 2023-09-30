@@ -532,6 +532,9 @@
                     tab-width 4
                     c-basic-offset 4))))
 
+(use-package yaml-ts-mode
+  :mode "\\.ya?ml\\'")
+
 ;; PlantUML
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
