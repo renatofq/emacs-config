@@ -440,8 +440,11 @@
   (add-hook 'eshell-load-hook #'eat-eshell-mode)
   (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
 
-  (defun user/eshell-new () (eshell 'N))
-  (global-set-key (kbd "C-c C-s") #'user/eshell-new)
+  (defun user/eshell-new ()
+    "Open a new shell instance"
+    (interactive)
+    (eshell 'N))
+  (global-set-key (kbd "C-c s") #'user/eshell-new)
 
   (setq user/eshell-aliases
         '((o   . find-file)
