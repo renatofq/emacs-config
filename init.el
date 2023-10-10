@@ -253,8 +253,6 @@
          ("M-*" . tempel-insert))
 
   :init
-  (unbind-key "M-<up>" tempel-map)
-  (unbind-key "M-<down>" tempel-map)
   (setq tempel-path (file-name-concat user-emacs-directory "templates"))
   ;; Setup completion at point
   (defun user/tempel-setup-capf ()
@@ -277,6 +275,10 @@
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
   ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   ;; (global-tempel-abbrev-mode)
+
+  :config
+  (unbind-key "M-<up>" tempel-map)
+  (unbind-key "M-<down>" tempel-map)
 )
 
 ;; undo-tree
