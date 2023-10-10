@@ -42,11 +42,6 @@
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode t))
 
-;; disable suspend in graphical mode
-(when (display-graphic-p)
-  (global-unset-key (kbd "C-z"))
-  (global-unset-key (kbd "C-x C-z")))
-
 ;; mode line settings
 (line-number-mode t)
 (column-number-mode t)
@@ -96,28 +91,6 @@
 
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") #'ibuffer)
-
-;; save-as functions
-(defun save-as-and-switch (filename)
-  "Clone the current buffer and switch to the clone"
-  (interactive "FCopy and switch to file: ")
-  (save-restriction
-    (widen)
-    (write-region (point-min) (point-max) filename nil nil nil 'confirm))
-  (find-file filename))
-
-(defun save-as-do-not-switch (filename)
-  "Clone the current buffer but don't switch to the clone"
-  (interactive "FCopy (without switching) to file:")
-  (write-region (point-min) (point-max) filename)
-  (find-file-noselect filename))
-
-(defun save-as (filename)
-  "Prompt user whether to switch to the clone."
-  (interactive "FCopy to file: ")
-  (if (y-or-n-p "Switch to new file?")
-    (save-as-and-switch filename)
-    (save-as-do-not-switch filename)))
 
 ;; define a unified place to all generated/data
 (defun varfile-name (filename)
@@ -275,12 +248,14 @@
   ;; Require trigger prefix before template name when completing.
   ;; :custom
   ;; (tempel-trigger-prefix "<")
-
+  :ensure t
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
          ("M-*" . tempel-insert))
 
   :init
-  (setq tempel-path (varfile-name "templates"))
+  (unbind-key "M-<up>" tempel-map)
+  (unbind-key "M-<down>" tempel-map)
+  (setq tempel-path (file-name-concat user-emacs-directory "templates"))
   ;; Setup completion at point
   (defun user/tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
@@ -452,15 +427,56 @@
   :init
   (smartparens-global-mode))
 
+;; eshell
+(use-package eat
+  :ensure t)
+
+(use-package eshell
+  :after eat
+  :init
+  ;; Use eat as terminal emulator
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+
+  (defun user/shortened-path (path max-len)
+  "Return a potentially trimmed-down version of the directory PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (reduce '+ components :key 'length)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+
+  (setq eshell-prompt-regexp " [Λλ] ")
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat (user/shortened-path (eshell/pwd) 32)
+                  (if (= (user-uid) 0) " Λ " " λ "))))
+
 ;;;; Language specific settings ------------------------------------------------
-;; Enable tree-sitter for some major modes
-(use-package emacs
-  :config
-  (setq major-mode-remap-alist
-        '((json-mode . json-ts-mode)
-          (yaml-mode . yaml-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode))))
+  ;; Enable tree-sitter for some major modes
+  (use-package emacs
+    :config
+    (setq major-mode-remap-alist
+          '((json-mode . json-ts-mode)
+            (yaml-mode . yaml-ts-mode)
+            (js2-mode . js-ts-mode)
+            (typescript-mode . typescript-ts-mode)))))
 
 ;; Lisp family ----------------
 (use-package paredit
@@ -532,6 +548,9 @@
                     tab-width 4
                     c-basic-offset 4))))
 
+(use-package dockerfile-ts-mode
+  :mode "\\(Dockerfile\\|Containerfile\\)")
+
 (use-package yaml-ts-mode
   :mode "\\.ya?ml\\'")
 
@@ -542,6 +561,28 @@
   (setq plantuml-default-exec-mode 'jar
         plantuml-jar-path (substitute-in-file-name "${HOME}/.local/lib/plantuml.jar")))
 
+;;;; Utility functions
+;; save-as functions
+(defun user/save-as-and-switch (filename)
+  "Clone the current buffer and switch to the clone"
+  (interactive "FCopy and switch to file: ")
+  (save-restriction
+    (widen)
+    (write-region (point-min) (point-max) filename nil nil nil 'confirm))
+  (find-file filename))
+
+(defun user/save-as-do-not-switch (filename)
+  "Clone the current buffer but don't switch to the clone"
+  (interactive "FCopy (without switching) to file:")
+  (write-region (point-min) (point-max) filename)
+  (find-file-noselect filename))
+
+(defun user/save-as (filename)
+  "Prompt user whether to switch to the clone."
+  (interactive "FCopy to file: ")
+  (if (y-or-n-p "Switch to new file?")
+    (save-as-and-switch filename)
+    (save-as-do-not-switch filename)))
 
 (defun user/load-all-in-directory (dir)
   "`load' all elisp libraries in directory DIR which are not already loaded."
@@ -554,6 +595,7 @@
           (load library nil t)
           (push library libraries-loaded))))))
 
+;;;; Load "vendor" directory
 (user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
 (provide 'init)
 ;;; init.el ends here
