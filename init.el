@@ -70,6 +70,9 @@
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 (setq-default tab-width 4)            ;; but maintain correct appearance
 
+;; end of sentence is not double spaces
+(setq sentence-end-double-space nil)
+
 ;; newline at end of file
 (setq require-final-newline t)
 
@@ -77,6 +80,7 @@
 (delete-selection-mode t)
 
 ;; store all backup and autosave files in the tmp dir
+(setq backup-by-copying t)
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -88,6 +92,9 @@
 
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
+
+;; hippie-expand instead of dabbrev-expand
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") #'ibuffer)
