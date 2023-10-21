@@ -356,25 +356,6 @@
 
   (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix))
 
-;; ;; denote - zettlekasten package
-;; (use-package denote
-;;   :ensure t
-;;   :init
-;;   (setq denote-directory (expand-file-name "~/Documentos/zettelkasten")
-;;         denote-known-keywords '("emacs" "programação"))
-;;   (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
-;;   :config
-;;   ;; org capture with denote
-;;   (setq denote-org-capture-specifiers "%l\n%i\n%?")
-;;   (add-to-list 'org-capture-templates
-;;                '("n" "New note (with denote.el)" plain
-;;                  (file denote-last-path)
-;;                  #'denote-org-capture
-;;                  :no-save t
-;;                  :immediate-finish nil
-;;                  :kill-buffer t
-;;                  :jump-to-captured t)))
-
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
   :ensure t
