@@ -64,15 +64,16 @@
   :group 'restclient
   :type 'boolean)
 
-(defcustom restclient-content-type-modes '(("text/xml" . xml-mode)
-                                           ("text/plain" . text-mode)
-                                           ("application/xml" . xml-mode)
-                                           ("application/json" . js-mode)
-                                           ("image/png" . image-mode)
-                                           ("image/jpeg" . image-mode)
-                                           ("image/jpg" . image-mode)
-                                           ("image/gif" . image-mode)
-                                           ("text/html" . html-mode))
+(defcustom restclient-content-type-modes
+  '(("text/xml" . xml-mode)
+    ("text/plain" . text-mode)
+    ("application/xml" . xml-mode)
+    ("application/json" . js-mode)
+    ("image/png" . image-mode)
+    ("image/jpeg" . image-mode)
+    ("image/jpg" . image-mode)
+    ("image/gif" . image-mode)
+    ("text/html" . html-mode))
   "An association list mapping content types to buffer modes"
   :group 'restclient
   :type '(alist :key-type string :value-type symbol))
@@ -535,7 +536,7 @@ The buffer contains the raw HTTP response sent by the server."
 (defun restclient-single-request-function ()
   (dolist (f restclient-curr-request-functions)
     (ignore-errors
-      (funcall f)))  
+      (funcall f)))
   (setq restclient-curr-request-functions nil)
   (remove-hook 'restclient-response-loaded-hook 'restclient-single-request-function))
 
@@ -659,7 +660,7 @@ Optional argument STAY-IN-WINDOW do not move focus to response buffer if t."
   (backward-char 1)
   (setq deactivate-mark nil))
 
-(defun restclient-show-info ()  
+(defun restclient-show-info ()
   ;; restclient-info-buffer-name
   (interactive)
   (let ((vars-at-point (restclient-find-vars-before-point)))
@@ -677,13 +678,13 @@ Optional argument STAY-IN-WINDOW do not move focus to response buffer if t."
 			   (insert (format "* %s \n|--|\n|Name|Value|\n|---|\n" table-name)))
 		(var-table-footer ()
 				  (insert "|--|\n\n")))
-      
+
       (with-current-buffer (get-buffer-create restclient-info-buffer-name)
 	;; insert our info
 	(erase-buffer)
 
 	(insert "\Restclient Info\ \n\n")
-       
+
 	(var-table "Dynamic Variables")
 	(dolist (dv restclient-var-overrides)
 	  (var-row (car dv) (cdr dv)))
@@ -728,7 +729,7 @@ Optional argument STAY-IN-WINDOW do not move focus to response buffer if t."
         (end-of-line)
         ;; If the overlays at this point have 'invisible set, toggling
         ;; must make the region visible. Else it must hide the region
-        
+
         ;; This part of code is from org-hide-block-toggle method of
         ;; Org mode
         (let ((overlays (overlays-at (point))))
@@ -772,7 +773,7 @@ Optional argument STAY-IN-WINDOW do not move focus to response buffer if t."
     (define-key map (kbd "C-c C-.") 'restclient-mark-current)
     (define-key map (kbd "C-c C-u") 'restclient-copy-curl-command)
     (define-key map (kbd "C-c n n") 'restclient-narrow-to-current)
-    (define-key map (kbd "C-c C-i") 'restclient-show-info)   
+    (define-key map (kbd "C-c C-i") 'restclient-show-info)
     map)
   "Keymap for restclient-mode.")
 

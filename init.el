@@ -1,8 +1,17 @@
 ;; package --- Emacs init file
-
 ;; configure custom file and load it's values first
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
+(load (expand-file-name "custom.el" user-emacs-directory))
+
+;; load user defined
+(load (expand-file-name "user.el" user-emacs-directory))
+
+;; add melpa-stable
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+;;;; Load "vendor" directory
+(user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
+(provide 'init)
 
 ;;;; UX setup
 ;; disable tool-bar menu-bar and scroll-bar
@@ -417,6 +426,11 @@
   :init
   (smartparens-global-mode))
 
+;; rg.el
+(use-package rg
+  :init
+  (rg-enable-default-bindings))
+
 ;; eshell
 (use-package eat
   :ensure t)
@@ -432,7 +446,7 @@
     "Open a new shell instance"
     (interactive)
     (eshell 'N))
-  (global-set-key (kbd "C-c s") #'user/eshell-new)
+  (global-set-key (kbd "C-c .") #'user/eshell-new)
 
   (setq user/eshell-aliases
         '((o   . find-file)
@@ -520,6 +534,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-hook 'scheme-mode-hook #'paredit-mode)
   (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
 
+;; Fennel
+(use-package fennel-mode
+  :config
+  (add-hook 'fennel-mode-hook 'fennel-proto-repl-minor-mode)
+  (add-hook 'scheme-mode-hook #'paredit-mode)
+  (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
+
 ;; Clojure
 (use-package clojure-mode
   :ensure t
@@ -573,56 +594,4 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :init
   (setq plantuml-default-exec-mode 'jar
         plantuml-jar-path (substitute-in-file-name "${HOME}/.local/lib/plantuml.jar")))
-
-;;;; Utility functions
-;; save-as functions
-(defun user/save-as-and-switch (filename)
-  "Clone the current buffer and switch to the clone"
-  (interactive "FCopy and switch to file: ")
-  (save-restriction
-    (widen)
-    (write-region (point-min) (point-max) filename nil nil nil 'confirm))
-  (find-file filename))
-
-(defun user/save-as-do-not-switch (filename)
-  "Clone the current buffer but don't switch to the clone"
-  (interactive "FCopy (without switching) to file:")
-  (write-region (point-min) (point-max) filename)
-  (find-file-noselect filename))
-
-(defun user/save-as (filename)
-  "Prompt user whether to switch to the clone."
-  (interactive "FCopy to file: ")
-  (if (y-or-n-p "Switch to new file?")
-    (save-as-and-switch filename)
-    (save-as-do-not-switch filename)))
-
-(defun user/window-split-toggle ()
-  "Toggle between horizontal and vertical split with two windows."
-  (interactive)
-  (if (> (length (window-list)) 2)
-      (error "Can't toggle with more than 2 windows!")
-    (let ((func (if (window-full-height-p)
-                    #'split-window-vertically
-                  #'split-window-horizontally)))
-      (delete-other-windows)
-      (funcall func)
-      (save-selected-window
-        (other-window 1)
-        (switch-to-buffer (other-buffer))))))
-
-(defun user/load-all-in-directory (dir)
-  "`load' all elisp libraries in directory DIR which are not already loaded."
-  (interactive "D")
-  (let ((libraries-loaded (mapcar #'file-name-sans-extension
-                                  (delq nil (mapcar #'car load-history)))))
-    (dolist (file (directory-files dir t ".+\\.elc?$"))
-      (let ((library (file-name-sans-extension file)))
-        (unless (member library libraries-loaded)
-          (load library nil t)
-          (push library libraries-loaded))))))
-
-;;;; Load "vendor" directory
-(user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
-(provide 'init)
 ;;; init.el ends here
