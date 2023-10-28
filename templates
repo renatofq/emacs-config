@@ -2,6 +2,14 @@ lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
 (lambda "(lambda (" p ")" n> r> ")")
 
+fennel-mode
+
+(local "(local " p " " p ")")
+(var "(var " p " " p ")")
+(fn "(fn " p " [" p "]" n> r> ")")
+(lambda "(lambda [" p "]" n> r> ")")
+(ipairs "(each [i v (ipairs " p ")]" n> r> ")")
+
 emacs-lisp-mode
 
 (autoload & ";;;###autoload")
