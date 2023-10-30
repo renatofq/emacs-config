@@ -1,6 +1,6 @@
 scheme-mode
 
-(defn "(define (" p ") " n> r> ")")
+(defn "(define (" p ")" n> r> ")")
 (def "(define " p " " r> ")")
 (let "(let (" p ")" n> r> ")")
 (let* "(let* (" p ")" n> r> ")")
@@ -8,7 +8,7 @@ scheme-mode
 
 clojure-mode
 
-(defn "(defn " p n> " [" p "] " n> r> ")")
+(defn "(defn " p n> "[" p "]" n> r> ")")
 (def "(def " p " " r> ")")
 (let "(let [" p "]" n> r> ")")
 
