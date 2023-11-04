@@ -419,6 +419,8 @@
   :ensure t
   :diminish smartparens-mode
   :init
+  (sp-pair "'" "'" :actions :rem)
+  (sp-pair "\\[" "\\]" :actions '(insert wrap autoskip navigate))
   (smartparens-global-mode))
 
 ;; rg.el
@@ -685,7 +687,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  '(package-selected-packages
    '(cmake-mode llm move-text rg htmlize flymake-guile tramp use-package xref org flymake project eat tempel cape which-key diff-hl editorconfig crux diminish magit marginalia modus-themes orderless vertico corfu cider clojure-mode geiser-guile rainbow-delimiters paredit smartparens olivetti corfu-terminal clj-refactor eglot go-mode lua-mode denote dockerfile-mode compat cobol-mode markdown-mode json-mode yaml-mode restclient helm undo-tree))
  '(safe-local-variable-values
-   '((eval add-hook 'geiser-repl-startup-hook
+   '((org-export-with-section-numbers)
+     (org-export-with-toc)
+     (org-global-properties
+      (header-args . ":results output"))
+     (org-export-with-todo-keywords)
+     (eval add-hook 'geiser-repl-startup-hook
            (lambda nil
              (geiser-load-file "defs.scm")))
      (eval advice-add 'org-babel-insert-result :filter-args
