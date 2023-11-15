@@ -85,11 +85,16 @@
       (path-separator . ":")
       (null-device . "/dev/null"))))
  '(custom-safe-themes
-   '("f74e8d46790f3e07fbb4a2c5dafe2ade0d8f5abc9c203cd1c29c7d5110a85230" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7" "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" default))
+   '("69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "f74e8d46790f3e07fbb4a2c5dafe2ade0d8f5abc9c203cd1c29c7d5110a85230" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7" "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" default))
  '(package-selected-packages
-   '(move-text rg htmlize flymake-guile tramp use-package xref org flymake project eat tempel cape which-key diff-hl editorconfig crux diminish magit marginalia modus-themes orderless vertico corfu cider clojure-mode geiser-guile rainbow-delimiters paredit smartparens olivetti corfu-terminal clj-refactor eglot go-mode lua-mode denote dockerfile-mode compat cobol-mode markdown-mode json-mode yaml-mode restclient helm undo-tree))
+   '(cmake-mode llm move-text rg htmlize flymake-guile tramp use-package xref org flymake project eat tempel cape which-key diff-hl editorconfig crux diminish magit marginalia modus-themes orderless vertico corfu cider clojure-mode geiser-guile rainbow-delimiters paredit smartparens olivetti corfu-terminal clj-refactor eglot go-mode lua-mode denote dockerfile-mode compat cobol-mode markdown-mode json-mode yaml-mode restclient helm undo-tree))
  '(safe-local-variable-values
-   '((eval add-hook 'geiser-repl-startup-hook
+   '((org-export-with-section-numbers)
+     (org-export-with-toc)
+     (org-global-properties
+      (header-args . ":results output"))
+     (org-export-with-todo-keywords)
+     (eval add-hook 'geiser-repl-startup-hook
            (lambda nil
              (geiser-load-file "defs.scm")))
      (eval advice-add 'org-babel-insert-result :filter-args
