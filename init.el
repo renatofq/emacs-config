@@ -567,12 +567,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq cider-use-overlays nil)
   (add-hook 'cider-repl-mode-hook #'paredit-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook #'clj-refactor-mode)
-  ;; (add-hook 'cider-mode-hook
-  ;;           #'(lambda ()
-  ;;               (setq cider-eldoc-display-for-symbol-at-point nil)
-  ;;               (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)))
-  )
+  (add-hook 'cider-repl-mode-hook #'clj-refactor-mode))
 
 ;; Other languages --------------
 ;; Cobol
@@ -583,6 +578,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package typescript-ts-mode
   :config
   (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
+
+(use-package js-ts-mode
+  :mode "\\.js\\'"
+  :config
+  (add-hook 'js-ts-mode-hook 'eglot-ensure))
 
 ;;;; cc-mode
 (use-package c-ts-mode
