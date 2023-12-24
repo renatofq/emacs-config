@@ -445,6 +445,11 @@
   ;; Use eat as terminal emulator
   (add-hook 'eshell-load-hook #'eat-eshell-mode)
   (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-options '("git" "--help" "--paginate"))
+              (add-to-list 'eshell-visual-subcommands '("git" "log" "diff" "show"))
+              (setq eshell-destroy-buffer-when-process-dies 't)))
 
   (defun user/eshell-new ()
     "Open a new shell instance"
