@@ -229,13 +229,16 @@
 ;; Corfu, Cape and Tempel
 (use-package corfu
   :ensure t
-  :init
-  (global-corfu-mode)
+  :custom
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
   :bind
-  (:map corfu-map
-        ("SPC" . corfu-insert-separator)
-        ("C-n" . corfu-next)
-        ("C-p" . corfu-previous)))
+    (:map corfu-map
+        ("TAB" . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ("SPC" . corfu-insert-separator))
+  :init
+  (global-corfu-mode))
 
 ;; Part of corfu
 (use-package corfu-popupinfo
