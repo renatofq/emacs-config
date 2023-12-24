@@ -235,8 +235,9 @@
   :bind
     (:map corfu-map
         ("TAB" . corfu-next)
+        ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ("SPC" . corfu-insert-separator))
+        ([backtab] . corfu-previous))
   :init
   (global-corfu-mode))
 
