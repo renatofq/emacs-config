@@ -209,7 +209,7 @@
   :init
   (vertico-mode))
 
-;; Enable rich annotations using the Marginalia package
+;; Enable rich annotations at minibuffer using the Marginalia package
 (use-package marginalia
   :ensure t
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
@@ -425,21 +425,18 @@
   (sp-pair "'" "'" :actions :rem)
   (sp-pair "\\[" "\\]" :actions '(insert wrap autoskip navigate)))
 
-;; rg.el
+;; rg.el -- ripgrep
 (use-package rg
   :init
   (rg-enable-default-bindings))
 
-;; ellama+ollama
-(use-package ellama
-  :requires llm)
-
-;; eshell
+;; eat + eshell
 (use-package eat
   :ensure t)
 
 (use-package eshell
   :after eat
+  :requires pcmpl-args
   :init
   ;; Use eat as terminal emulator
   (add-hook 'eshell-load-hook #'eat-eshell-mode)
@@ -496,17 +493,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq eshell-prompt-function
         (lambda ()
           (concat (user/shortened-path (eshell/pwd) 32)
-                  (if (= (user-uid) 0) " Λ " " λ "))))
+                  (if (= (user-uid) 0) " Λ " " λ ")))))
 
 ;;;; Language specific settings ------------------------------------------------
 ;; Enable tree-sitter for some major modes
-  (use-package emacs
-    :config
-    (setq major-mode-remap-alist
-          '((json-mode . json-ts-mode)
-            (yaml-mode . yaml-ts-mode)
-            (js2-mode . js-ts-mode)
-            (typescript-mode . typescript-ts-mode)))))
+(use-package emacs
+  :config
+  (setq major-mode-remap-alist
+        '((json-mode . json-ts-mode)
+          (yaml-mode . yaml-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode))))
 
 ;; Lisp family ----------------
 (use-package paredit
