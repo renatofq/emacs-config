@@ -104,7 +104,8 @@
      (tramp-connection-local-default-system-profile
       (path-separator . ":") (null-device . "/dev/null"))))
  '(custom-safe-themes
-   '("69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8"
+   '("21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4"
+     "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8"
      "f74e8d46790f3e07fbb4a2c5dafe2ade0d8f5abc9c203cd1c29c7d5110a85230"
      "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f"
      "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7"
@@ -116,10 +117,10 @@
           dockerfile-mode eat editorconfig eglot esh-autosuggest
           flymake flymake-guile geiser-guile go-mode graphviz-dot-mode
           helm htmlize json-mode llm lua-mode magit marginalia
-          markdown-mode modus-themes move-text olivetti orderless org
-          paredit project rainbow-delimiters restclient rg smartparens
-          tempel tramp undo-tree use-package vertico which-key xref
-          yaml-mode))
+          markdown-mode meson-mode modus-themes move-text olivetti
+          orderless org paredit project rainbow-delimiters restclient
+          rg smartparens tempel tramp undo-tree use-package vertico
+          which-key xref yaml-mode))
  '(safe-local-variable-values
    '((eval set 'geiser-repl-startup-hook
            (let*

@@ -381,6 +381,7 @@
   :ensure t
   :init
   (setq completion-category-overrides '((eglot (styles orderless))))
+  (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   (defun user/eglot-capf ()
   (setq-local completion-at-point-functions
@@ -512,7 +513,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         '((json-mode . json-ts-mode)
           (yaml-mode . yaml-ts-mode)
           (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode))))
+          (typescript-mode . typescript-ts-mode)
+          (c-mode . c-ts-mode))))
 
 ;; Lisp family ----------------
 (use-package paredit
@@ -583,13 +585,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
 
 ;;;; cc-mode
-(use-package cc-mode
+(use-package c-ts-mode
   :config
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (setq c-default-style "k&r"
-                    tab-width 4
-                    c-basic-offset 4))))
+  (add-hook 'c-ts-mode-hook 'eglot-ensure))
 
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")
