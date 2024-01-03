@@ -115,12 +115,12 @@
    '(cape cider clj-refactor clojure-mode cmake-mode cobol-mode compat
           corfu corfu-terminal crux denote diff-hl diminish
           dockerfile-mode eat editorconfig eglot esh-autosuggest
-          flymake flymake-guile geiser-guile go-mode graphviz-dot-mode
-          helm htmlize json-mode llm lua-mode magit marginalia
-          markdown-mode meson-mode modus-themes move-text olivetti
-          orderless org paredit project rainbow-delimiters restclient
-          rg smartparens tempel tramp undo-tree use-package vertico
-          which-key xref yaml-mode))
+          fish-mode flymake flymake-guile geiser-guile go-mode
+          graphviz-dot-mode helm htmlize json-mode lua-mode magit
+          marginalia markdown-mode meson-mode modus-themes move-text
+          olivetti orderless org paredit project rainbow-delimiters
+          restclient rg smartparens tempel tramp undo-tree use-package
+          vertico which-key xref yaml-mode))
  '(safe-local-variable-values
    '((eval set 'geiser-repl-startup-hook
            (let*

@@ -231,7 +231,7 @@
   :ensure t
   :custom
   (corfu-cycle t)
-  (corfu-preselect 'prompt)
+  (corfu-preselect 'directory)
   :bind
     (:map corfu-map
         ("TAB" . corfu-next)
@@ -381,16 +381,18 @@
   :ensure t
   :init
   (setq completion-category-overrides '((eglot (styles orderless))))
-  (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   (defun user/eglot-capf ()
-  (setq-local completion-at-point-functions
-              (list (cape-super-capf
-                     #'eglot-completion-at-point
-                     #'tempel-expand
-                     #'cape-file))))
+    (setq-local completion-at-point-functions
+                (list (cape-super-capf
+                       #'eglot-completion-at-point
+                       #'tempel-expand
+                       #'cape-file))))
 
-  (add-hook 'eglot-managed-mode-hook #'user/eglot-capf))
+  (add-hook 'eglot-managed-mode-hook #'user/eglot-capf)
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (eglot-inlay-hints-mode -1))))
 
 ;; diff-hl
 (use-package diff-hl
