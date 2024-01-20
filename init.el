@@ -18,9 +18,6 @@
 ;; disable tool-bar menu-bar and scroll-bar
 (tool-bar-mode -1)
 
-;; I'll experiment menu-bar for a while
-;; (menu-bar-mode -1)
-
 ;; Disable scroll-bar
 (scroll-bar-mode -1)
 
@@ -172,12 +169,11 @@
   (setq whitespace-line-column 80) ;; limit line length
   (setq whitespace-style '(face tabs empty trailing)))
 
-(use-package flyspell
-  :config
-  (setq ispell-program-name "aspell" ; use aspell instead of ispell
-        ispell-extra-args '("--sug-mode=ultra"))
-  (add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
-  (add-hook 'text-org-hook #'flyspell-mode))
+(use-package jinx
+  :ensure t
+  :hook (emacs-startup . global-jinx-mode)
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
 
 ;; meaningful names for buffers with the same name
 (use-package uniquify
@@ -223,10 +219,13 @@
   ;; Marginalia must be activated in the :init section of use-package such that
   ;; the mode gets enabled right away. Note that this forces loading the
   ;; package.
-  (marginalia-mode))
+  (marginalia-mode)
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
+  (vertico-multiform-mode 1))
 
 
-;; Corfu, Cape and Tempel
+;; Corfu
 (use-package corfu
   :ensure t
   :custom
@@ -250,45 +249,6 @@
   (corfu-popupinfo-hide nil)
   :config
   (corfu-popupinfo-mode))
-
-(use-package cape
-  :ensure t
-  :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file))
-
-; Configure Tempel
-(use-package tempel
-  :ensure t
-  :bind
-  (:map tempel-map
-        ("<tab>" . tempel-next)
-        ("<backtab>" . tempel-previous)
-        ("<return>" . tempel-end))
-  :init
-  (setq tempel-path (file-name-concat user-emacs-directory "templates"))
-  ;; Setup completion at point
-  (defun user/tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'text-mode-hook 'user/tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  ;; (global-tempel-abbrev-mode)
-)
 
 ;; Consult
 ;; Example configuration for Consult
@@ -442,7 +402,7 @@
            (file+datetree "~/Documentos/org/diario.org")
            "* %?\nEm %U\n  %i\n  %a")))
 
-  ;; default identation on code blocks
+  ;; default indentation on code blocks
   (setq org-edit-src-content-indentation 0)
 
   ;; org-babel
@@ -486,21 +446,10 @@
   (editorconfig-mode 1)
   (diminish 'editorconfig-mode))
 
-;; magit
+;; magit + diff-hl
 (use-package magit
   :ensure t)
 
-;; eglot
-(use-package eglot
-  :ensure t
-  :init
-  (setq completion-category-overrides '((eglot (styles orderless))))
-  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (eglot-inlay-hints-mode -1))))
-
-;; diff-hl
 (use-package diff-hl
   :ensure t
   :commands (diff-hl-dired-mode diff-hl-magit-post-refresh)
@@ -508,6 +457,52 @@
          (magit-post-refresh . diff-hl-magit-post-refresh))
   :config
   (global-diff-hl-mode +1))
+
+;; eglot + snippets
+(use-package tempel
+  :ensure t
+  :bind
+  (:map tempel-map
+        ("<tab>" . tempel-next)
+        ("<backtab>" . tempel-previous)
+        ("<return>" . tempel-end))
+  :init
+  (setq tempel-path (file-name-concat user-emacs-directory "templates"))
+  ;; Setup completion at point
+  (defun user/tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
+  (add-hook 'text-mode-hook 'user/tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+)
+
+;; Configure Tempel
+(use-package eglot
+  :ensure t
+  :init
+  (setq completion-category-overrides '((eglot (styles orderless))))
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (eglot-inlay-hints-mode -1))))
+
+(use-package eglot-tempel
+  :after eglot
+  :defer 2)
 
 ;; crux
 (use-package crux
