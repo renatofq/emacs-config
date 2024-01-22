@@ -55,6 +55,14 @@ emacs-lisp-mode
 (log "(message \"LOG %s " (s sexp) ": %S"
      "\" (format-time-string \"%X\") " sexp ")")
 
+c-mode c-ts-mode
+
+(if "if (" p ") {" n> q n> "}")
+(elif "else if (" p ") {" n> q n> "}")
+(else "else {" n> q n> "}")
+
+(for "for (" p "; " p "; " p ") {" n> q n> "}")
+
 eshell-mode
 
 (for "for " (p "i") " in " p " { " q " }")

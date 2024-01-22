@@ -111,7 +111,13 @@
      "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7"
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7"
      default))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(cape cider cmake-mode consult corfu crux denote diff-hl diminish eat
+          editorconfig eglot esh-autosuggest fish-mode flymake-guile
+          geiser-guile go-mode graphviz-dot-mode htmlize jinx lua-mode
+          magit marginalia markdown-mode meson-mode modus-themes
+          olivetti orderless paredit rainbow-delimiters rg smartparens
+          tempel tramp undo-tree use-package vertico which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

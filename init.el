@@ -538,6 +538,18 @@
   :init
   (rg-enable-default-bindings))
 
+;; denote
+(use-package denote
+  :ensure t
+  :bind (("C-c n n" . denote))
+  :init
+  (setq denote-directory (file-name-concat (xdg-user-dir "DOCUMENTS") "notes/"))
+  (setq denote-known-keywords '("emacs" "microsserviços" "programação" "arquitetura"))
+  (setq denote-infer-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-backlinks-show-context t)
+  (add-hook 'context-menu-functions #'denote-context-menu))
+
 ;; eat + eshell
 (use-package eat
   :ensure t)
