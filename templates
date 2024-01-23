@@ -62,7 +62,7 @@ c-mode c-ts-mode
 
 (struct "struct " p n " {" n> q n "}")
 
-(main "int" n "main(int argc, char *argv[])" n "{" n> q n> "return 0;" n "}")
+(main "int" n "main (int argc, char *argv[])" n "{" n> q n> "return 0;" n "}")
 
 (if "if (" p ")" n> "{" n> q n> "}")
 (elif "else if (" p ")" n> "{" n> q n> "}")
