@@ -459,6 +459,15 @@
   (global-diff-hl-mode +1))
 
 ;; eglot + snippets
+(use-package eglot
+  :ensure t
+  :init
+  (setq completion-category-overrides '((eglot (styles orderless))))
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (eglot-inlay-hints-mode -1))))
+
+;; Configure Tempel
 (use-package tempel
   :ensure t
   :bind
@@ -484,21 +493,13 @@
   (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
   (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
   (add-hook 'text-mode-hook 'user/tempel-setup-capf)
+  (add-hook 'eglot-managed-mode-hook 'tempel-setup-capf)
 
   ;; Optionally make the Tempel templates available to Abbrev,
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
   ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   ;; (global-tempel-abbrev-mode)
-)
-
-;; Configure Tempel
-(use-package eglot
-  :ensure t
-  :init
-  (setq completion-category-overrides '((eglot (styles orderless))))
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (eglot-inlay-hints-mode -1))))
+  )
 
 (use-package eglot-tempel
   :after eglot
@@ -706,7 +707,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; cc-mode
 (use-package c-ts-mode
   :config
-  (add-hook 'c-ts-mode-hook 'eglot-ensure))
+  (add-hook 'c-ts-mode-hook 'eglot-ensure)
+  (setq c-ts-mode-indent-style "k&r"
+        c-ts-mode-indent-style-offset 4))
 
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")

@@ -57,11 +57,21 @@ emacs-lisp-mode
 
 c-mode c-ts-mode
 
+(inc "#include <" q ">")
+(def "#define (" q ")")
+
+(main "int main(int argc, char *argv[]) {" n> q n> "return 0;" n "}")
+
 (if "if (" p ") {" n> q n> "}")
 (elif "else if (" p ") {" n> q n> "}")
 (else "else {" n> q n> "}")
 
 (for "for (" p "; " p "; " p ") {" n> q n> "}")
+(while "while (" p ") {" n> q n> "}")
+(switch "switch (" p ") {" n> q n> "}")
+
+(printf "printf(\"" p  "\"\\n);")
+
 
 eshell-mode
 
