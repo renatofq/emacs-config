@@ -60,17 +60,19 @@ c-mode c-ts-mode
 (inc "#include <" q ">")
 (def "#define (" q ")")
 
-(main "int main(int argc, char *argv[]) {" n> q n> "return 0;" n "}")
+(struct "struct " p n " {" n> q n "}")
 
-(if "if (" p ") {" n> q n> "}")
-(elif "else if (" p ") {" n> q n> "}")
-(else "else {" n> q n> "}")
+(main "int" n "main(int argc, char *argv[])" n "{" n> q n> "return 0;" n "}")
 
-(for "for (" p "; " p "; " p ") {" n> q n> "}")
-(while "while (" p ") {" n> q n> "}")
-(switch "switch (" p ") {" n> q n> "}")
+(if "if (" p ")" n> "{" n> q n> "}")
+(elif "else if (" p ")" n> "{" n> q n> "}")
+(else "else" n> "{" n> q n> "}")
 
-(printf "printf(\"" p  "\"\\n);")
+(for "for (" p "; " p "; " p ")" n> "{" n> q n> "}")
+(while "while (" p ")" n> "{" n> q n> "}")
+(switch "switch (" p ")" n> "{" n> q n> "}")
+
+(printf "printf (\"" q  "\\n\");")
 
 
 eshell-mode

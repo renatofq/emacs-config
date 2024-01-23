@@ -76,6 +76,7 @@
 ;;;; Editor setup
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 (setq-default tab-width 4)            ;; but maintain correct appearance
+(setq tab-always-indent 'complete)    ;; smart tab behavior - indent or complete
 
 ;; end of sentence is not double spaces
 (setq sentence-end-double-space nil)
@@ -96,9 +97,6 @@
 ;; revert buffers automatically when underlying files are changed externally
 (setq global-auto-revert-non-file-buffers t)
 (global-auto-revert-mode t)
-
-;; smart tab behavior - indent or complete
-(setq tab-always-indent 'complete)
 
 ;; dabbrev-expand
 (global-set-key (kbd "M-/") 'dabbrev-expand)
@@ -219,10 +217,7 @@
   ;; Marginalia must be activated in the :init section of use-package such that
   ;; the mode gets enabled right away. Note that this forces loading the
   ;; package.
-  (marginalia-mode)
-  (add-to-list 'vertico-multiform-categories
-               '(jinx grid (vertico-grid-annotate . 20)))
-  (vertico-multiform-mode 1))
+  (marginalia-mode))
 
 
 ;; Corfu
@@ -493,7 +488,7 @@
   (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
   (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
   (add-hook 'text-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'eglot-managed-mode-hook 'tempel-setup-capf)
+  (add-hook 'eglot-managed-mode-hook 'user/tempel-setup-capf)
 
   ;; Optionally make the Tempel templates available to Abbrev,
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
@@ -707,9 +702,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; cc-mode
 (use-package c-ts-mode
   :config
-  (add-hook 'c-ts-mode-hook 'eglot-ensure)
-  (setq c-ts-mode-indent-style "k&r"
-        c-ts-mode-indent-style-offset 4))
+  (add-hook 'c-ts-mode-hook 'eglot-ensure))
 
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")
