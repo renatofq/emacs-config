@@ -349,22 +349,8 @@
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 3. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
-)
+  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+  )
 
 ;; undo-tree
 (use-package undo-tree
@@ -548,7 +534,8 @@
 
 ;; eat + eshell
 (use-package eat
-  :ensure t)
+  :ensure t
+  :custom (eat-kill-buffer-on-exit t))
 
 (use-package eshell
   :after eat
@@ -585,30 +572,6 @@
   (mapc (lambda (alias)
 	      (defalias (car alias) (cdr alias)))
         user/eshell-aliases)
-
-  (defun user/shortened-path (path max-len)
-    "Return a potentially trimmed-down version of the directory PATH, replacing
-parent directories with their initial characters to try to get the character
-length of PATH (sans directory slashes) down to MAX-LEN."
-    (let* ((components (split-string (abbreviate-file-name path) "/"))
-           (len (+ (1- (length components))
-                   (reduce '+ components :key 'length)))
-           (str ""))
-      (while (and (> len max-len)
-                  (cdr components))
-        (setq str (concat str
-                          (cond ((= 0 (length (car components))) "/")
-                                ((= 1 (length (car components)))
-                                 (concat (car components) "/"))
-                                (t
-                                 (if (string= "."
-                                              (string (elt (car components) 0)))
-                                     (concat (substring (car components) 0 2)
-                                             "/")
-                                   (string (elt (car components) 0) ?/)))))
-              len (- len (1- (length (car components))))
-              components (cdr components)))
-      (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
 
   (setq eshell-prompt-regexp " [Λλ] ")
   (setq eshell-prompt-function
@@ -703,6 +666,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package c-ts-mode
   :config
   (add-hook 'c-ts-mode-hook 'eglot-ensure))
+
+(use-package julia-mode)
+
+(use-package julia-snail
+  :custom
+  (julia-snail-terminal-type :eat)
+  :hook
+  (julia-mode . julia-snail-mode))
 
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")

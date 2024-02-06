@@ -112,13 +112,13 @@
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7"
      default))
  '(package-selected-packages
-   '(cider cmake-mode consult corfu crux denote diff-hl diminish eat
-           editorconfig eglot esh-autosuggest fish-mode flymake-guile
-           geiser-guile go-mode graphviz-dot-mode htmlize jinx
-           lua-mode magit marginalia markdown-mode meson-mode
-           modus-themes olivetti orderless paredit rainbow-delimiters
-           rg smartparens tempel tramp undo-tree use-package vertico
-           which-key))
+   '(cider consult corfu crux denote diff-hl diminish eat editorconfig
+           eglot esh-autosuggest fish-mode flymake-guile geiser-guile
+           go-mode graphviz-dot-mode htmlize jinx julia-mode
+           julia-repl julia-snail lua-mode magit marginalia
+           markdown-mode meson-mode modus-themes olivetti orderless
+           paredit rainbow-delimiters rg smartparens tempel tramp
+           undo-tree use-package vertico which-key))
  '(safe-local-variable-values
    '((eval defun user/game-repl nil "Starts the game with repl"
            (interactive)
