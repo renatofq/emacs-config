@@ -18,8 +18,8 @@
   "Prompt user whether to switch to the clone."
   (interactive "FCopy to file: ")
   (if (y-or-n-p "Switch to new file?")
-    (save-as-and-switch filename)
-    (save-as-do-not-switch filename)))
+    (user/save-as-and-switch filename)
+    (user/save-as-do-not-switch filename)))
 
 (defun user/window-split-toggle ()
   "Toggle between horizontal and vertical split with two windows."
