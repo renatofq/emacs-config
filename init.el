@@ -631,21 +631,31 @@
               (eglot-ensure))))
 
 ;; Clojure
+(use-package clj-refactor
+  :ensure t)
+
+(use-package flycheck-clj-kondo
+  :ensure t)
+
 (use-package clojure-mode
   :ensure t
   :config
-  (add-hook 'clojure-mode-hook #'paredit-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+  (require 'flycheck-clj-kondo)
+  (add-hook 'clojure-mode-hook
+            (lambda ()
+              (paredit-mode 1)
+              (rainbow-delimiters-mode 1)
+              (clj-refactor-mode 1)
+              (cljr-add-keybindings-with-prefix "C-c M-r")
+              (yas-minor-mode 1)
+              (flycheck-mode))))
 
 (use-package cider
   :ensure t
-  :requires clj-refactor
   :config
   (setq nrepl-log-messages t)
-  (setq cider-use-overlays nil)
-  (add-hook 'cider-repl-mode-hook #'paredit-mode)
-  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook #'clj-refactor-mode))
+  (setq cider-enrich-classpath t)
+  (setq cider-use-overlays nil))
 
 ;; Other languages --------------
 ;; Cobol
