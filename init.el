@@ -695,6 +695,8 @@
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
   :init
-  (setq plantuml-default-exec-mode 'jar
-        plantuml-jar-path (substitute-in-file-name "${HOME}/.local/lib/plantuml.jar")))
+  (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((plantuml . t))))
 ;;; init.el ends here
