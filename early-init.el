@@ -13,6 +13,6 @@
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 
 ;; config path
-(setenv "PATH"
-        (concat (getenv "PATH")
-                ":" (substitute-in-file-name "${HOME}/.local/bin")))
+(let ((local-bin (substitute-in-file-name "${HOME}/.local/bin")))
+  (setenv "PATH" (concat (getenv "PATH") ":" local-bin))
+  (add-to-list 'exec-path local-bin))

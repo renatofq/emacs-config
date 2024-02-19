@@ -449,40 +449,6 @@
             (lambda ()
               (eglot-inlay-hints-mode -1))))
 
-;; Configure Tempel
-(use-package tempel
-  :ensure t
-  :bind
-  (:map tempel-map
-        ("<tab>" . tempel-next)
-        ("<backtab>" . tempel-previous)
-        ("<return>" . tempel-end))
-  :init
-  (setq tempel-path (file-name-concat user-emacs-directory "templates"))
-  ;; Setup completion at point
-  (defun user/tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (add-hook 'conf-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'text-mode-hook 'user/tempel-setup-capf)
-  (add-hook 'eglot-managed-mode-hook 'user/tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  ;; (global-tempel-abbrev-mode)
-  )
-
 ;; crux
 (use-package crux
   :ensure t
@@ -522,7 +488,6 @@
   :ensure t
   :bind (("C-c n n" . denote))
   :init
-  (setq denote-directory (file-name-concat (xdg-user-dir "DOCUMENTS") "notes/"))
   (setq denote-known-keywords '("emacs" "microsserviços" "programação" "arquitetura"))
   (setq denote-infer-keywords t)
   (setq denote-prompts '(title keywords))
