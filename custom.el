@@ -113,13 +113,12 @@
      default))
  '(package-selected-packages
    '(cider consult corfu crux denote diff-hl diminish eat editorconfig
-           eglot fish-mode flycheck-clj-kondo flymake-guile
-           geiser-guile go-mode graphviz-dot-mode htmlize jinx
-           julia-repl julia-snail lua-mode magit marginalia
-           markdown-mode meson-mode modus-themes olivetti orderless
-           paredit pkg-info plantuml-mode rainbow-delimiters rg
-           smartparens tempel tramp undo-tree use-package vertico
-           which-key yasnippet))
+           eglot fish-mode flymake-guile flymake-kondor geiser-guile
+           go-mode graphviz-dot-mode htmlize jinx julia-repl
+           julia-snail lua-mode magit marginalia markdown-mode
+           meson-mode modus-themes olivetti orderless paredit pkg-info
+           plantuml-mode rainbow-delimiters rg smartparens tempel
+           tramp undo-tree use-package vertico which-key yasnippet))
  '(safe-local-variable-values
    '((eval set 'geiser-repl-startup-hook
            (let*

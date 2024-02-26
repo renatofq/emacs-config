@@ -169,7 +169,6 @@
 
 (use-package jinx
   :ensure t
-  :hook (emacs-startup . global-jinx-mode)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))
 
@@ -181,7 +180,7 @@
         uniquify-after-kill-buffer-p t       ; rename after killing uniquified
         uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
 
-;; re-nuilder
+;; re-builder
 (use-package re-builder
   :init
   (setq reb-re-syntax 'string))
@@ -418,6 +417,8 @@
     (setq syntax-propertize-function 'user/org-mode-<>-syntax-fix)
     (syntax-propertize (point-max)))
 
+  (add-hook 'org-mode-hook #'olivetti-mode)
+  (add-hook 'org-mode-hook #'jinx-mode)
   (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix))
 
 ;; use settings from .editorconfig file when present
@@ -627,19 +628,19 @@
               (eglot-ensure))))
 
 ;; Clojure
-(use-package flycheck-clj-kondo
+(use-package flymake-kondor
   :ensure t)
 
 (use-package clojure-mode
   :ensure t
   :config
-  (require 'flycheck-clj-kondo)
   (add-hook 'clojure-mode-hook
             (lambda ()
               (paredit-mode 1)
               (rainbow-delimiters-mode 1)
               (yas-minor-mode 1)
-              (flycheck-mode))))
+              (flymake-kondor-setup)
+              (flymake-mode t))))
 
 (use-package cider
   :ensure t
