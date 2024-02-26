@@ -482,10 +482,6 @@
   ;; (global-tempel-abbrev-mode)
   )
 
-(use-package eglot-tempel
-  :after eglot
-  :defer 2)
-
 ;; crux
 (use-package crux
   :ensure t
@@ -631,9 +627,6 @@
               (eglot-ensure))))
 
 ;; Clojure
-(use-package clj-refactor
-  :ensure t)
-
 (use-package flycheck-clj-kondo
   :ensure t)
 
@@ -645,8 +638,6 @@
             (lambda ()
               (paredit-mode 1)
               (rainbow-delimiters-mode 1)
-              (clj-refactor-mode 1)
-              (cljr-add-keybindings-with-prefix "C-c M-r")
               (yas-minor-mode 1)
               (flycheck-mode))))
 

@@ -113,14 +113,22 @@
      default))
  '(package-selected-packages
    '(cider consult corfu crux denote diff-hl diminish eat editorconfig
-           eglot esh-autosuggest fish-mode flymake-guile geiser-guile
-           go-mode graphviz-dot-mode htmlize jinx julia-mode
+           eglot fish-mode flycheck-clj-kondo flymake-guile
+           geiser-guile go-mode graphviz-dot-mode htmlize jinx
            julia-repl julia-snail lua-mode magit marginalia
            markdown-mode meson-mode modus-themes olivetti orderless
-           paredit rainbow-delimiters rg smartparens tempel tramp
-           undo-tree use-package vertico which-key))
+           paredit pkg-info plantuml-mode rainbow-delimiters rg
+           smartparens tempel tramp undo-tree use-package vertico
+           which-key yasnippet))
  '(safe-local-variable-values
-   '((eval defun user/game-repl nil "Starts the game with repl"
+   '((eval set 'geiser-repl-startup-hook
+           (let*
+               ((dir (dir-locals-find-file "."))
+                (full-path
+                 (expand-file-name "defs.scm"
+                                   (if (stringp dir) dir (car dir)))))
+             (lambda nil (geiser-load-file full-path))))
+     (eval defun user/game-repl nil "Starts the game with repl"
            (interactive)
            (let*
                ((dir-locals (dir-locals-find-file "."))
