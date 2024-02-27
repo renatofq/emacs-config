@@ -601,4 +601,15 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((plantuml . t))))
+
+;; llm
+(use-package ellama
+    :init
+  ;; setup key bindings
+  (setopt ellama-keymap-prefix "C-c e")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+          (make-llm-ollama
+           :chat-model "gemma:7b"
+           :embedding-model "gemma:7b")))
 ;;; init.el ends here

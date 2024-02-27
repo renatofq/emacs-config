@@ -1,4 +1,12 @@
 ;; package --- Emacs user file
+(defun user/proxy-bb-setup ()
+  "Configura o proxy bb"
+  (interactive)
+  (setq url-proxy-services
+   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+     ("http" . "127.0.0.1:3128")
+     ("https" . "127.0.0.1:3128"))))
+
 ;; save-as functions
 (defun user/save-as-and-switch (filename)
   "Clone the current buffer and switch to the clone"
