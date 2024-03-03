@@ -669,14 +669,6 @@
   :config
   (add-hook 'c-ts-mode-hook 'eglot-ensure))
 
-(use-package julia-mode)
-
-(use-package julia-snail
-  :custom
-  (julia-snail-terminal-type :eat)
-  :hook
-  (julia-mode . julia-snail-mode))
-
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")
 
