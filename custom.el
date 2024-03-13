@@ -106,7 +106,31 @@
  '(package-selected-packages
    '(cider consult corfu crux denote diff-hl diminish eat editorconfig eglot fish-mode flymake-guile flymake-kondor geiser-guile go-mode graphviz-dot-mode htmlize jinx lua-mode magit marginalia markdown-mode meson-mode modus-themes olivetti orderless paredit pkg-info plantuml-mode rainbow-delimiters rg smartparens tempel tramp undo-tree use-package vertico which-key yasnippet))
  '(safe-local-variable-values
-   '((eval set 'geiser-repl-startup-hook
+   '((eval advice-add 'org-babel-insert-result :filter-args
+           (lambda
+             (args)
+             (let
+                 ((result
+                   (car args))
+                  (result-params
+                   (cadr args))
+                  (others
+                   (cddr args)))
+               (apply 'list result
+                      (if
+                          (or
+                           (string-empty-p result)
+                           (not result))
+                          (progn
+                            (org-babel-remove-result)
+                            '("silent"))
+                        result-params)
+                      others))))
+     (org-global-properties
+      (header-args . ":results output"))
+     (org-export-with-section-numbers)
+     (org-export-with-toc)
+     (eval set 'geiser-repl-startup-hook
            (let*
                ((dir
                  (dir-locals-find-file "."))

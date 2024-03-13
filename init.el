@@ -372,14 +372,14 @@
 ;; org-mode
 (use-package org
   :init
-  (setq org-directory "~/Documentos/org")
-  (setq org-default-notes-file (concat org-directory "/notas.org"))
+  (setq org-directory (file-name-concat (xdg-user-dir "DOCUMENTS") "org/"))
+  (setq org-default-notes-file (file-name-concat org-directory "inbox.org"))
   (setq org-capture-templates
         '(("t" "Todo" entry
-           (file+headline "~/Documentos/org/tarefas.org" "Tarefas")
+           (file+headline (file-name-concat org-directory "tasks.org") "Tarefas")
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry
-           (file+datetree "~/Documentos/org/diario.org")
+           (file+datetree (file-name-concat org-directory "journal.org"))
            "* %?\nEm %U\n  %i\n  %a")))
 
   ;; default indentation on code blocks
@@ -528,53 +528,6 @@
   (setq denote-prompts '(title keywords))
   (setq denote-backlinks-show-context t)
   (add-hook 'context-menu-functions #'denote-context-menu))
-
-;; eat + eshell
-(use-package eat
-  :ensure t
-  :custom (eat-kill-buffer-on-exit t))
-
-(use-package eshell
-  :after eat
-  :requires pcmpl-args
-  :init
-  ;; Use eat as terminal emulator
-  (add-hook 'eshell-load-hook #'eat-eshell-mode)
-  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (add-to-list 'eshell-visual-options '("git" "--help" "--paginate"))
-              (add-to-list 'eshell-visual-subcommands '("git" "log" "diff" "show"))
-              (setq eshell-destroy-buffer-when-process-dies 't)))
-
-  (defun user/eshell-new ()
-    "Open a new shell instance"
-    (interactive)
-    (eshell 'N))
-  (global-set-key (kbd "C-c .") #'user/eshell-new)
-
-  (setq user/eshell-aliases
-        '((o   . find-file)
-          (oo  . find-file-other-window)
-          (d   . dired)
-          (l   . (lambda () (eshell/ls '-l)))
-          (ll  . (lambda () (eshell/ls '-la)))
-          (cl  . eshell/clear-scrollback)
-          (v   . view-file)
-          (vo  . view-file-other-window)
-          ;; overwrites
-          (less . view-file)
-          (emacs . find-file)))
-
-  (mapc (lambda (alias)
-	      (defalias (car alias) (cdr alias)))
-        user/eshell-aliases)
-
-  (setq eshell-prompt-regexp " [Λλ] ")
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat (user/shortened-path (eshell/pwd) 32)
-                  (if (= (user-uid) 0) " Λ " " λ ")))))
 
 ;;;; Language specific settings ------------------------------------------------
 ;; Enable tree-sitter for some major modes
