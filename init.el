@@ -180,11 +180,6 @@
         uniquify-after-kill-buffer-p t       ; rename after killing uniquified
         uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
 
-;; re-builder
-(use-package re-builder
-  :init
-  (setq reb-re-syntax 'string))
-
 ;; cleanup modeline
 (use-package diminish
   :ensure t)
@@ -391,31 +386,8 @@
    '((scheme . t)
      (emacs-lisp . nil)
      (dot . t)))
-  (defun user/org-confirm-babel-evaluate (lang body)
-    (not (member lang '("scheme" "dot"))))
+
   (setq org-confirm-babel-evaluate 'user/org-confirm-babel-evaluate)
-
-  ;; fix mismatch of < and > inside code blocks
-  (defun user/org-mode-<>-syntax-fix (start end)
-    "Change syntax of characters ?< and ?> to symbol within source code blocks."
-    (let ((case-fold-search t))
-      (when (eq major-mode 'org-mode)
-        (save-excursion
-          (goto-char start)
-          (while (re-search-forward "<\\|>" end t)
-            (when (save-excursion
-                    (and
-                     (re-search-backward "[[:space:]]*#\\+\\(begin\\|end\\)_src\\_>" nil t)
-                     (string-equal (downcase (match-string 1)) "begin")))
-              ;; This is a < or > in an org-src block
-              (put-text-property (point) (1- (point))
-                                 'syntax-table (string-to-syntax "_"))))))))
-
-  (defun user/org-setup-<>-syntax-fix ()
-    "Setup for characters ?< and ?> in source code blocks."
-    (make-local-variable 'syntax-propertize-function)
-    (setq syntax-propertize-function 'user/org-mode-<>-syntax-fix)
-    (syntax-propertize (point-max)))
 
   (add-hook 'org-mode-hook #'olivetti-mode)
   (add-hook 'org-mode-hook #'jinx-mode)
@@ -597,7 +569,9 @@
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
   :init
-  (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+  (setq plantuml-jar-path "/home/wsl/.local/share/plantuml/plantuml.jar")
+  (setq plantuml-exec-mode 'jar)
+  (setq plantuml-java-args '("-Djava.awt.headless=true" "-jar"))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((plantuml . t))))
@@ -610,6 +584,6 @@
   (require 'llm-ollama)
   (setopt ellama-provider
           (make-llm-ollama
-           :chat-model "gemma:7b"
-           :embedding-model "gemma:7b")))
+           :chat-model "zephyr:7b"
+           :embedding-model "zephyr:7b")))
 ;;; init.el ends here

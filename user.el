@@ -77,4 +77,29 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             len (- len (1- (length (car components))))
             components (cdr components)))
     (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+
+;; fix mismatch of < and > inside code blocks
+(defun user/org-mode-<>-syntax-fix (start end)
+  "Change syntax of characters ?< and ?> to symbol within source code blocks."
+  (let ((case-fold-search t))
+    (when (eq major-mode 'org-mode)
+      (save-excursion
+        (goto-char start)
+        (while (re-search-forward "<\\|>" end t)
+          (when (save-excursion
+                  (and
+                   (re-search-backward "[[:space:]]*#\\+\\(begin\\|end\\)_src\\_>" nil t)
+                   (string-equal (downcase (match-string 1)) "begin")))
+            ;; This is a < or > in an org-src block
+            (put-text-property (point) (1- (point))
+                               'syntax-table (string-to-syntax "_"))))))))
+
+(defun user/org-setup-<>-syntax-fix ()
+  "Setup for characters ?< and ?> in source code blocks."
+  (make-local-variable 'syntax-propertize-function)
+  (setq syntax-propertize-function 'user/org-mode-<>-syntax-fix)
+  (syntax-propertize (point-max)))
+
+(defun user/org-confirm-babel-evaluate (lang body)
+  (not (member lang '("scheme" "dot"))))
 ;;; user.el ends here
