@@ -78,6 +78,12 @@
 (setq-default tab-width 4)            ;; but maintain correct appearance
 (setq tab-always-indent 'complete)    ;; smart tab behavior - indent or complete
 
+;; Emacs 30 and newer: Disable Ispell completion function.
+(setq text-mode-ispell-word-completion nil)
+
+;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current mode.
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+
 ;; end of sentence is not double spaces
 (setq sentence-end-double-space nil)
 
@@ -391,7 +397,11 @@
 
   (add-hook 'org-mode-hook #'olivetti-mode)
   (add-hook 'org-mode-hook #'jinx-mode)
-  (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix))
+  (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix)
+
+  :config
+  (add-to-list 'org-latex-packages-alist
+               '("AUTO" "babel" t ("pdflatex" "xelatex" "lualatex"))))
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
