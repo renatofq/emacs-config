@@ -579,7 +579,8 @@
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
   :init
-  (setq plantuml-jar-path "/home/wsl/.local/share/plantuml/plantuml.jar")
+  (setq plantuml-jar-path (expand-file-name "plantuml/plantuml.jar"
+                                            (xdg-data-home)))
   (setq plantuml-exec-mode 'jar)
   (setq plantuml-java-args '("-Djava.awt.headless=true" "-jar"))
   (org-babel-do-load-languages
