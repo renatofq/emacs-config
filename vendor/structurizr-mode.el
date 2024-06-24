@@ -44,18 +44,24 @@
              (x-types '("person" "softwareSystem" "deploymentEnvironment" "deploymentNode" "deploymentGroup" "infrastructureNode" "containerInstance" "softwareSystemInstance" "systemLandscape" "systemContext" "container" "component" "filtered" "dynamic" "deployment" "styles" "themes" "branding" "element" "relationship" "group" "properties" "perspectives" "terminology"))
              (x-relationship '("->"))
              (x-properties '("include" "exclude" "autoLayout" "tags" "url" "title" "shape" "icon" "width" "height" "background" "colour" "color" "stroke" "fontSize" "border" "opacity" "metadata" "description" "thickness" "dashed" "routing" "position" "technology" "scope" "theme"))
+             (x-bangs '("!var" "!const" "!adrs" "!docs" "!plugins" "!include" "!script" "!impliedRelationships" ))
+             (x-consts '("true" "false"))
 
              ;; generate regex string for each category of keywords
              (x-keywords-regexp (regexp-opt x-keywords 'words))
              (x-types-regexp (regexp-opt x-types 'words))
              (x-relationship-regexp (regexp-opt x-relationship))
-             (x-properties-regexp (regexp-opt x-properties 'words)))
+             (x-properties-regexp (regexp-opt x-properties 'words))
+             (x-bangs-regexp (regexp-opt x-bangs 't))
+             (x-consts-regexp (regexp-opt x-consts 'words)))
 
         `(
+          (,x-bangs-regexp . 'font-lock-preprocessor-face)
           (,x-types-regexp . 'font-lock-type-face)
           (,x-properties-regexp . 'font-lock-variable-name-face)
           (,x-keywords-regexp . 'font-lock-keyword-face)
-          (,x-relationship-regexp . 'font-lock-function-name-face)
+          (,x-relationship-regexp . 'font-lock-builtin-face)
+          (,x-consts-regexp . 'font-lock-constant-face)
           ;; note: order above matters, because once coloured, that part won't change.
           ;; in general, put longer words first
           )))
@@ -65,6 +71,7 @@
 (setq structurizr-mode-syntax-table
   (let ((syntax-table (make-syntax-table)))
     ; Comment styles are the same as C++/Java
+    (modify-syntax-entry ?# "<" syntax-table)
     (modify-syntax-entry ?/ ". 124" syntax-table)
     (modify-syntax-entry ?* ". 23b" syntax-table)
     (modify-syntax-entry ?\n ">" syntax-table)

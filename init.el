@@ -457,7 +457,9 @@
   :init
   (smartparens-global-mode)
   :config
-  (sp-pair "'" "'" :actions :rem)
+  (sp-local-pair
+   '(emacs-lisp-mode clojure-mode fennel-mode scheme-mode)
+   "'" "'" :actions nil)
   (sp-pair "\\[" "\\]" :actions '(insert wrap autoskip navigate)))
 
 ;; rg.el -- ripgrep
@@ -479,7 +481,7 @@
 ;;;; Language specific settings ------------------------------------------------
 ;; Enable tree-sitter for some major modes
 (use-package emacs
-  :config
+  :init
   (setq major-mode-remap-alist
         '((json-mode . json-ts-mode)
           (yaml-mode . yaml-ts-mode)
@@ -554,15 +556,27 @@
 (use-package cobol-mode
   :mode "\\.cbl\\'")
 
-;; Typescript
+;; Javascript + Typescript
 (use-package typescript-ts-mode
   :config
   (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
 
 (use-package js-ts-mode
   :mode "\\.js\\'"
+  :init
+  (add-hook 'js-ts-mode-hook 'eglot-ensure)
+  (add-hook 'js-ts-mode-hook 'yas-minor-mode))
+
+(use-package nvm
+  :ensure t
   :config
-  (add-hook 'js-ts-mode-hook 'eglot-ensure))
+  ;; default node version
+  (nvm-use "v20.14"))
+
+(use-package js-comint
+  :ensure t
+  :config
+  (js-do-use-nvm))
 
 ;;;; cc-mode
 (use-package c-ts-mode
@@ -587,9 +601,12 @@
    'org-babel-load-languages
    '((plantuml . t))))
 
+(use-package text-mode
+  :mode "\\.\\(txt|xml\\)\\'")
+
 ;; llm
 (use-package ellama
-    :init
+  :init
   ;; setup key bindings
   (setopt ellama-keymap-prefix "C-c e")
   (require 'llm-ollama)

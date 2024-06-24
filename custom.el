@@ -112,7 +112,15 @@
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7"
      default))
  '(package-selected-packages
-   '(cobol-mode typescript-mode cider consult corfu crux denote diff-hl diminish eat ellama editorconfig eglot fish-mode flymake-guile flymake-kondor geiser-guile go-mode graphviz-dot-mode htmlize jinx julia-repl julia-snail lua-mode magit marginalia markdown-mode meson-mode modus-themes olivetti orderless paredit pkg-info plantuml-mode rainbow-delimiters rg smartparens tempel tramp undo-tree use-package vertico which-key yasnippet))
+   '(cider clojure-mode cobol-mode consult corfu crux denote diff-hl
+           diminish eat editorconfig eglot ellama fish-mode
+           flymake-guile flymake-kondor geiser-guile go-mode
+           graphviz-dot-mode htmlize jinx js-comint julia-repl
+           julia-snail lua-mode magit marginalia markdown-mode
+           meson-mode modus-themes nvm olivetti orderless paredit
+           pkg-info plantuml-mode rainbow-delimiters rg smartparens
+           tempel tramp typescript-mode undo-tree use-package vertico
+           which-key yasnippet))
  '(safe-local-variable-values
    '((eval advice-add 'org-babel-insert-result :filter-args
            (lambda (args)
