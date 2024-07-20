@@ -571,7 +571,7 @@
   :ensure t
   :config
   ;; default node version
-  (nvm-use "v20.14"))
+  (nvm-use "v20.15.1"))
 
 (use-package js-comint
   :ensure t
@@ -597,6 +597,8 @@
                                             (xdg-data-home)))
   (setq plantuml-exec-mode 'jar)
   (setq plantuml-java-args '("-Djava.awt.headless=true" "-jar"))
+  (setq org-plantuml-jar-path plantuml-jar-path)
+  (setq org-plantuml-exec-mode plantuml-exec-mode)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((plantuml . t))))
