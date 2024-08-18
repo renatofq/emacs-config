@@ -308,17 +308,6 @@
 
   ;; The :init configuration is always executed (Not lazy)
   :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
@@ -528,6 +517,9 @@
               (eglot-ensure))))
 
 ;; Clojure
+(use-package clj-refactor
+  :ensure t)
+
 (use-package flymake-kondor
   :ensure t)
 
@@ -538,9 +530,11 @@
             (lambda ()
               (paredit-mode 1)
               (rainbow-delimiters-mode 1)
+              (clj-refactor-mode 1)
               (yas-minor-mode 1)
               (flymake-kondor-setup)
-              (flymake-mode t))))
+              (flymake-mode t)
+              (cljr-add-keybindings-with-prefix "C-c C-m"))))
 
 (use-package cider
   :ensure t
@@ -583,18 +577,9 @@
                                             (xdg-data-home)))
   (setq plantuml-exec-mode 'jar)
   (setq plantuml-java-args '("-Djava.awt.headless=true" "-jar"))
+  (setq org-plantuml-jar-path plantuml-jar-path)
+  (setq org-plantuml-exec-mode plantuml-exec-mode)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((plantuml . t))))
-
-;; llm
-(use-package ellama
-    :init
-  ;; setup key bindings
-  (setopt ellama-keymap-prefix "C-c e")
-  (require 'llm-ollama)
-  (setopt ellama-provider
-          (make-llm-ollama
-           :chat-model "zephyr:7b"
-           :embedding-model "zephyr:7b")))
 ;;; init.el ends here
