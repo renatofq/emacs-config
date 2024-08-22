@@ -1,0 +1,41 @@
+# encoding: UTF-8
+#
+# We use ISO 639-1 (language) and ISO 3166 alpha-2 (region - if applicable):
+# http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+# http://en.wikipedia.org/wiki/ISO_3166-1
+#
+# If you want several aliases for a keyword, just separate them
+# with a | character. The * is a step keyword alias for all translations.
+#
+# If you do *not* want a trailing space after a keyword, end it with a < character.
+# (See Chinese for examples).
+#
+"en":
+  name: English
+  native: English
+  feature: Feature
+  background: Background
+  scenario: Scenario
+  scenario_outline: Scenario Outline|Scenario Template
+  examples: Examples|Scenarios
+  given: "*|Given"
+  when: "*|When"
+  then: "*|Then"
+  and: "*|And"
+  but: "*|But"
+
+# Please keep the grammars in alphabetical order by name from here and down.
+
+"pt":
+  name: Portuguese
+  native: português
+  background: Contexto
+  feature: Funcionalidade
+  scenario: Cenário|Cenario
+  scenario_outline: Esquema do Cenário|Esquema do Cenario
+  examples: Exemplos
+  given: "*|Dado|Dada|Dados|Dadas"
+  when: "*|Quando"
+  then: "*|Então|Entao"
+  and: "*|E"
+  but: "*|Mas"

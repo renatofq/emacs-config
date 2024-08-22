@@ -94,7 +94,7 @@
               '((comment)
                 (declaration)
                 (operator)
-                (annotation)
+                (statement)
                 (name)))
   (setq-local treesit-font-lock-level 5)
 
@@ -114,12 +114,22 @@
                :language 'mermaid
                :override t
                :feature 'operator
-               '([(sequence_signal_operator) (state_arrow)] @font-lock-function-name-face)
+               "[(sequence_stmt_signal (sequence_signal_type) @font-lock-function-name-face . [(sequence_signal_plus_sign) (sequence_signal_minus_sign)]? @font-lock-function-name-face) 
+                 (state_stmt_arrow (state_arrow) @font-lock-function-name-face)]
+                 "
 
                :language 'mermaid
                :override t
-               :feature 'annotation
-               '(["state " "participant" "actor"]  @font-lock-constant-face)
+               :feature 'statement
+               "[(sequence_stmt_participant . [\"participant\" \"actor\"] @font-lock-constant-face (sequence_actor) . \"as\" @font-lock-constant-face)
+                 (sequence_stmt_autonumber) @font-lock-constant-face
+                 (sequence_stmt_activate . \"activate\"  @font-lock-constant-face)
+                 (sequence_stmt_deactivate . \"deactivate\"  @font-lock-constant-face)
+                 (sequence_stmt_loop . \"loop\"  @font-lock-constant-face _ \"end\" @font-lock-constant-face .)
+                 (sequence_stmt_alt . \"alt\"  @font-lock-constant-face _ \"else\" @font-lock-constant-face _ \"end\" @font-lock-constant-face .)
+                 (sequence_stmt_opt . \"opt\"  @font-lock-constant-face)
+                 (sequence_stmt_par . \"par\"  @font-lock-constant-face)
+                 (sequence_stmt_note . \"note \" @font-lock-constant-face . [(sequence_note_placement) @font-lock-constant-face \"over\" @font-lock-constant-face])]"
 
                :language 'mermaid
                :override t

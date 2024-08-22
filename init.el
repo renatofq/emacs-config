@@ -370,6 +370,19 @@
   :config
   (which-key-mode))
 
+;; markdown
+(use-package markdown-mode
+  :ensure t
+  :requires edit-indirect
+  :mode ("\\.md\\'" . gfm-mode)
+  :bind (:map markdown-mode-map
+              ("C-c C-e" . markdown-do)
+              ("C-c ." . markdown-edit-code-block))
+  :init
+  (setq markdown-command "pandoc")
+  (setq markdown-fontify-code-blocks-natively t)
+  (add-to-list 'markdown-code-lang-modes '("mermaid" . mermaid-ts-mode)))
+
 ;; org-mode
 (use-package org
   :init
@@ -466,17 +479,6 @@
 (use-package rg
   :init
   (rg-enable-default-bindings))
-
-;; denote
-(use-package denote
-  :ensure t
-  :bind (("C-c n n" . denote))
-  :init
-  (setq denote-known-keywords '("emacs" "microsserviços" "programação" "arquitetura"))
-  (setq denote-infer-keywords t)
-  (setq denote-prompts '(title keywords))
-  (setq denote-backlinks-show-context t)
-  (add-hook 'context-menu-functions #'denote-context-menu))
 
 ;;;; Language specific settings ------------------------------------------------
 ;; Enable tree-sitter for some major modes
@@ -606,14 +608,11 @@
 (use-package text-mode
   :mode "\\.\\(txt|xml\\)\\'")
 
-;; llm
-(use-package ellama
+(use-package feature-mode
+  :mode "\\.feature\\'"
   :init
-  ;; setup key bindings
-  (setopt ellama-keymap-prefix "C-c e")
-  (require 'llm-ollama)
-  (setopt ellama-provider
-          (make-llm-ollama
-           :chat-model "zephyr:7b"
-           :embedding-model "zephyr:7b")))
+  (setq feature-default-language "pt")
+  (setq feature-default-i18n-file
+        (expand-file-name "etc/gherkin-i18n.yml" user-emacs-directory)))
+
 ;;; init.el ends here
