@@ -552,8 +552,9 @@ back-dent the line by `feature-indent-offset' spaces.  On reaching column
 
         (push (cons (or language-keyword keyword) font-locking) result-keywords)))
     (sort result-keywords
-          (lambda (keyword) (car keyword))
-          (lambda (a b) (> (length a) (length b))))))
+          :key #'(lambda (k) (car k))
+          :lessp #'(lambda (a b) (< (length a) (length b)))
+          :reverse t)))
 
 (defun feature-detect-language ()
   (save-excursion
