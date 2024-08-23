@@ -437,7 +437,7 @@
 (use-package modus-themes
   :ensure t
   :config
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-vivendi-tinted t))
 
 ;; smartparens
 (use-package smartparens
@@ -599,4 +599,35 @@
 
 (use-package text-mode
   :mode "\\.\\(txt|xml\\)\\'")
+
+;; eat + eshell
+(use-package eat
+  :ensure t
+  :custom (eat-kill-buffer-on-exit t))
+
+(use-package eshell
+  :after eat
+  :requires pcmpl-args
+  :init
+  ;; Use eat as terminal emulator
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-options '("git" "--help" "--paginate"))
+              (add-to-list 'eshell-visual-subcommands '("git" "log" "diff" "show"))
+              (setq eshell-destroy-buffer-when-process-dies 't)))
+
+  (defun user/eshell-new ()
+    "Open a new shell instance"
+    (interactive)
+    (eshell 'N))
+  (global-set-key (kbd "C-c .") #'user/eshell-new)
+
+
+  (setq eshell-prompt-regexp " [Λλ] ")
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat (user/shortened-path (eshell/pwd) 32)
+                  (if (= (user-uid) 0) " Λ " " λ ")))))
 ;;; init.el ends here
