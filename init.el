@@ -308,17 +308,6 @@
 
   ;; The :init configuration is always executed (Not lazy)
   :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
@@ -461,7 +450,7 @@
 (use-package modus-themes
   :ensure t
   :config
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-vivendi-tinted t))
 
 ;; smartparens
 (use-package smartparens
@@ -532,6 +521,9 @@
               (eglot-ensure))))
 
 ;; Clojure
+(use-package clj-refactor
+  :ensure t)
+
 (use-package flymake-kondor
   :ensure t)
 
@@ -542,9 +534,11 @@
             (lambda ()
               (paredit-mode 1)
               (rainbow-delimiters-mode 1)
+              (clj-refactor-mode 1)
               (yas-minor-mode 1)
               (flymake-kondor-setup)
-              (flymake-mode t))))
+              (flymake-mode t)
+              (cljr-add-keybindings-with-prefix "C-c C-m"))))
 
 (use-package cider
   :ensure t
@@ -615,4 +609,34 @@
   (setq feature-default-i18n-file
         (expand-file-name "etc/gherkin-i18n.yml" user-emacs-directory)))
 
+;; eat + eshell
+(use-package eat
+  :ensure t
+  :custom (eat-kill-buffer-on-exit t))
+
+(use-package eshell
+  :after eat
+  :requires pcmpl-args
+  :init
+  ;; Use eat as terminal emulator
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-options '("git" "--help" "--paginate"))
+              (add-to-list 'eshell-visual-subcommands '("git" "log" "diff" "show"))
+              (setq eshell-destroy-buffer-when-process-dies 't)))
+
+  (defun user/eshell-new ()
+    "Open a new shell instance"
+    (interactive)
+    (eshell 'N))
+  (global-set-key (kbd "C-c .") #'user/eshell-new)
+
+
+  (setq eshell-prompt-regexp " [Λλ] ")
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat (user/shortened-path (eshell/pwd) 32)
+                  (if (= (user-uid) 0) " Λ " " λ ")))))
 ;;; init.el ends here
