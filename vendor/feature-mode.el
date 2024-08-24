@@ -235,7 +235,7 @@ by `feature-indent-offset' spaces."
 
 (defvar feature-default-language "en")
 (defvar feature-default-directory "features")
-(defvar feature-default-i18n-file (expand-file-name (concat (file-name-directory load-file-name) "/i18n.yml")))
+(defvar feature-default-i18n-file (expand-file-name (concat (file-name-directory load-file-name) "/gherkin-i18n.yml")))
 
 (defconst feature-keywords-per-language
   (if (file-readable-p feature-default-i18n-file)
