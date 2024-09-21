@@ -111,9 +111,17 @@
      "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7"
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7"
      default))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(clj-refactor cobol-mode consult corfu crux diff-hl diminish eat
+                  edit-indirect editorconfig fish-mode flymake-kondor
+                  geiser-guile jinx js-comint just-mode magit
+                  marginalia markdown-mode modus-themes nvm olivetti
+                  orderless plantuml-mode rainbow-delimiters rg
+                  smartparens typescript-mode undo-tree vertico
+                  which-key))
  '(safe-local-variable-values
-   '((eval advice-add 'org-babel-insert-result :filter-args
+   '((likec4-indent-offset . 2)
+     (eval advice-add 'org-babel-insert-result :filter-args
            (lambda (args)
              (let
                  ((result (car args)) (result-params (cadr args))
