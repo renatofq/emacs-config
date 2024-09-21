@@ -109,8 +109,8 @@
                :language 'mermaid
                :override t
                :feature 'declaration
-               '(["sequenceDiagram" "stateDiagram-v2" "flowchart"]
-                 @font-lock-keyword-face)
+               "([\"sequenceDiagram\" \"stateDiagram-v2\" \"flowchart\"]
+                 @font-lock-keyword-face)"
 
                :language 'mermaid
                :override t
@@ -176,12 +176,19 @@
                :language 'mermaid
                :override t
                :feature 'name
-               '([(state_name) (sequence_actor) (flow_vertex_id)]  @font-lock-variable-use-face)))
+               "([(state_name)
+                  (sequence_actor)
+                  (flow_vertex_id)]
+                 @font-lock-variable-use-face)"))
 
   ;; This handles indentation
   (setq-local treesit-simple-indent-rules
               `((mermaid
-                 ((parent-is ,(regexp-opt '("diagram_sequence" "diagram_state" "diagram_flow"))) parent 4)
+                 ((parent-is ,(regexp-opt '("diagram_sequence"
+                                            "diagram_state"
+                                            "diagram_flow")))
+                  parent
+                  4)
                  (no-node parent 0))))
 
   ;; End with this
