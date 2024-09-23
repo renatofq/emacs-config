@@ -25,7 +25,7 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; font
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
 (add-to-list 'default-frame-alist '(line-spacing . 0.1))
 
 ;; ediff-split horizontally
@@ -569,7 +569,6 @@
   (nvm-use "v20.15.1"))
 
 (use-package js-comint
-  :ensure t
   :config
   (js-do-use-nvm))
 
