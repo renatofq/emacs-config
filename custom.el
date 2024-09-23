@@ -112,13 +112,15 @@
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7"
      default))
  '(package-selected-packages
-   '(clj-refactor cobol-mode consult corfu crux diff-hl diminish eat
-                  edit-indirect editorconfig fish-mode flymake-kondor
-                  geiser-guile jinx js-comint just-mode magit
-                  marginalia markdown-mode modus-themes olivetti
-                  orderless plantuml-mode rainbow-delimiters rg
-                  smartparens typescript-mode undo-tree vertico
-                  which-key))
+   '(cider clj-refactor clojure-mode cobol-mode consult corfu crux
+           diff-hl diminish eat edit-indirect editorconfig eglot
+           eglot-tempel fish-mode flymake flymake-guile flymake-kondor
+           geiser geiser-guile graphviz-dot-mode htmlize jinx
+           js-comint just-mode lua-mode magit marginalia markdown-mode
+           meson-mode modus-themes olivetti orderless paredit
+           plantuml-mode rainbow-delimiters rg smartparens tempel
+           tramp typescript-mode undo-tree use-package vertico
+           which-key))
  '(safe-local-variable-values
    '((likec4-indent-offset . 2)
      (eval advice-add 'org-babel-insert-result :filter-args

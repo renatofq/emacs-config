@@ -68,7 +68,7 @@ c-mode c-ts-mode
 (elif "else if (" p ")" n> "{" n> q n> "}")
 (else "else" n> "{" n> q n> "}")
 
-(for "for (" p "; " p "; " p ")" n> "{" n> q n> "}")
+(for "for (" p ";" p ";" p ")" n> "{" n> q n> "}")
 (while "while (" p ")" n> "{" n> q n> "}")
 (switch "switch (" p ")" n> "{" n> q n> "}")
 
