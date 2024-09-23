@@ -115,7 +115,7 @@
    '(clj-refactor cobol-mode consult corfu crux diff-hl diminish eat
                   edit-indirect editorconfig fish-mode flymake-kondor
                   geiser-guile jinx js-comint just-mode magit
-                  marginalia markdown-mode modus-themes nvm olivetti
+                  marginalia markdown-mode modus-themes olivetti
                   orderless plantuml-mode rainbow-delimiters rg
                   smartparens typescript-mode undo-tree vertico
                   which-key))

@@ -564,7 +564,6 @@
   (add-hook 'js-ts-mode-hook 'yas-minor-mode))
 
 (use-package nvm
-  :ensure t
   :config
   ;; default node version
   (nvm-use "v20.15.1"))

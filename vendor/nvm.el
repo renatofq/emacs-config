@@ -28,13 +28,14 @@
 
 ;;; Commentary:
 
+;; Allows to activate a version of node installed with nvm-fish
+;; see: https://github.com/jorgebucaran/nvm.fish
+
+;; It has the same package name as https://github.com/rejeep/nvm.el
+;; in order to be used by js-comint
+
 ;;; Code:
 (require 'xdg)
-
-(defgroup nvm nil
-  "Manage Node versions within Emacs"
-  :prefix "nvm-"
-  :group 'tools)
 
 (defvar nvm-current-version nil
   "Current active version.")
@@ -45,17 +46,30 @@
 (defun nvm--version-path (version)
   (expand-file-name version nvm-install-path))
 
+(defun nvm--installed-versions ()
+  (directory-files nvm-install-path nil "^v"))
+
 ;;;###autoload
 (defun nvm-use (version)
   "Activate Node VERSION."
+  (interactive
+   (list (completing-read "Version: " (nvm--installed-versions))))
   (let* ((version-path (nvm--version-path version))
-        (nvm-bin-path (expand-file-name "bin" version-path)))
+         (nvm-bin-path (expand-file-name "bin" version-path))
+         (not-nvm-path-p (lambda (path-dir)
+                           (not (string-prefix-p nvm-install-path path-dir)))))
     (setenv "NVM_BIN" nvm-bin-path)
     (setenv "NVM_PATH" (expand-file-name "lib" version-path))
-    (setenv "PATH" (string-join
-                    (cons nvm-bin-path (parse-colon-path (getenv "PATH")))
-                    path-separator))
-    (add-to-list 'exec-path nvm-bin-path)
+    (setenv "PATH"
+            (string-join (thread-last (getenv "PATH")
+                                      (parse-colon-path)
+                                      (seq-filter not-nvm-path-p)
+                                      (cons nvm-bin-path))
+                         path-separator))
+    (setq exec-path
+          (cons nvm-bin-path
+                (seq-filter not-nvm-path-p
+                            exec-path)))
     (setq nvm-current-version version)))
 
 (provide 'nvm)
