@@ -245,27 +245,6 @@
   :config
   (corfu-popupinfo-mode))
 
-;; Tempel
-(use-package tempel
-  :init
-  ;; Setup completion at point
-  (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (add-hook 'conf-mode-hook 'tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf))
-
-
 ;; Consult
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -445,10 +424,8 @@
   (global-diff-hl-mode +1))
 
 ;; eglot
-(use-package eglot-tempel
-  :preface (eglot-tempel-mode)
-  :init
-  (eglot-tempel-mode t))
+(use-package yasnippet
+  :ensure t)
 
 (use-package eglot
   :ensure t

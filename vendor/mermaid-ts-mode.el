@@ -1,8 +1,16 @@
-;;; mermaid-ts-mode.el --- major mode for working with mermaid with tree-sitter -*- lexical-binding: t; -*-
+;;; mermaid-ts-mode.el --- major mode for mermaid with tree-sitter -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024, Renato Fernandes de Queiroz
 
+;; Author: Renato Fernandes de Queiroz
+;; Version: 0.1
+;; Keywords: mermaid tree-sitter
+;; License: GNU General Public License = 3
+;; Package-Requires: ((emacs "29.1"))
+
 ;; This file is NOT part of Emacs.
+
+;;; License:
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -17,12 +25,13 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Version: 1.0
-;; Author: Renato Fernandes de Queiroz
-;; Keywords: mermaid tree-sitter
-;; URL: https://github.com/renatofq/mermaid-ts-mode
-;; License: GNU General Public License >= 3
-;; Package-Requires: ((emacs "29.1"))
+;;; Comentary:
+
+;; Tree-sitter based major mode for working with mermaid graphs.
+;; See https://mermaid-js.github.io/
+
+;; Derived from mermaid-mode by Adrien Brochard. You can find the original work
+;; at https://github.com/abrochard/mermaid-mode
 
 ;;; Code:
 (require 'treesit)

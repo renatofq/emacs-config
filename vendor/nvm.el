@@ -3,9 +3,10 @@
 ;; Copyright (C) 2024 Renato Fernandes de Queiroz
 
 ;; Author: Renato Fernandes de Queiroz <renatofq@gmail.com>
-;; Maintainer: Renato Fernandes de Queiroz <renatofq@gmail.com>
-;; Version: 0.3.0
+;; Version: 0.1
 ;; Keywords: node, nvm, fish
+;; License: GNU General Public License = 3
+;; Package-Requires: ((emacs "30.50"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -22,9 +23,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
