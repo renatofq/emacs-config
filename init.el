@@ -240,7 +240,7 @@
   :after corfu
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
-  (corfu-popupinfo-delay '(0.25 . 0.1))
+  ;; (corfu-popupinfo-delay '(0.25 . 0.1))
   (corfu-popupinfo-hide nil)
   :config
   (corfu-popupinfo-mode))
@@ -495,7 +495,8 @@
           (yaml-mode . yaml-ts-mode)
           (js2-mode . js-ts-mode)
           (typescript-mode . typescript-ts-mode)
-          (c-mode . c-ts-mode))))
+          (c-mode . c-ts-mode)
+          (java-mode . java-ts-mode))))
 
 ;; Lisp family ----------------
 (use-package paredit
@@ -662,3 +663,26 @@
           (concat (user/shortened-path (eshell/pwd) 32)
                   (if (= (user-uid) 0) " Λ " " λ ")))))
 ;;; init.el ends here
+
+;; Experimental
+(use-package lsp-mode
+  :hook
+  ((lsp-mode . lsp-enable-which-key-integration)))
+
+(use-package lsp-java
+  :init
+  (setq lsp-java-server-install-dir (expand-file-name "jdtls/" (xdg-data-home))
+        lsp-java-workspace-dir (expand-file-name "jdtls/" (xdg-state-home))
+        lsp-java-workspace-cache-dir (expand-file-name "jdtls/" (xdg-cache-home)))
+
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (add-hook 'java-ts-mode-hook
+            (lambda ()
+              (yas-minor-mode 1)
+              (lsp))))
+
+(use-package dap-mode
+  :after lsp-mode
+  :config (dap-auto-configure-mode))
+;;; Experimental end

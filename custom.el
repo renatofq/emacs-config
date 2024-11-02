@@ -115,8 +115,8 @@
    '(cider clj-refactor clojure-mode cobol-mode consult corfu crux
            diff-hl diminish eat edit-indirect editorconfig eglot
            fish-mode flymake flymake-guile flymake-kondor geiser
-           geiser-guile graphviz-dot-mode htmlize jinx js-comint
-           just-mode lua-mode magit marginalia markdown-mode
+           geiser-guile gpel graphviz-dot-mode htmlize jinx js-comint
+           just-mode lsp-java lua-mode magit marginalia markdown-mode
            meson-mode modus-themes olivetti orderless paredit
            plantuml-mode rainbow-delimiters rg smartparens tramp
            typescript-mode undo-tree use-package vertico which-key
