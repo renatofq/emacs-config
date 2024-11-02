@@ -44,13 +44,20 @@
                            "model"
                            "views"
                            "view"
+                           "dynamic"
                            "element"
                            "configuration"
                            "tag"
                            "style"
                            "relationship"
-                           "extend"))
-             (x-relationship '("->"))
+                           "extend"
+                           "with"
+                           "where"
+                           "kind"
+                           "is"
+                           "not"
+                           "and"))
+             (x-relationship '("->" "<-" "<->"))
              (x-properties '("include"
                              "description"
                              "title"
@@ -103,9 +110,9 @@
 (setq likec4-mode-syntax-table
   (let ((syntax-table (make-syntax-table)))
     ; Comments start with //
-    (modify-syntax-entry ?/ ". 12" syntax-table)
+    (modify-syntax-entry ?/ "< 12" syntax-table)
     (modify-syntax-entry ?\n ">" syntax-table)
-    (modify-syntax-entry ?\' "\"" syntax-table)
+    (modify-syntax-entry ?\" "\"" syntax-table)
     (modify-syntax-entry ?{ "(" syntax-table)
     (modify-syntax-entry ?} ")" syntax-table)
     (modify-syntax-entry ?, "." syntax-table)
