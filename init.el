@@ -425,7 +425,10 @@
 
 ;; eglot
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :init
+  (setq yas-snippet-dirs
+        `(,(expand-file-name "snippets" user-emacs-directory))))
 
 (use-package eglot
   :ensure t
