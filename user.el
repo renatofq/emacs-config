@@ -1,11 +1,18 @@
 ;; package --- Emacs user file
+(defun user/c-indent-complete ()
+    (interactive)
+    (let ((p (point)))
+      (c-indent-line-or-region)
+      (when (= p (point))
+        (call-interactively 'complete-symbol))))
+
 (defun user/proxy-bb-setup ()
   "Configura o proxy bb"
   (interactive)
   (setq url-proxy-services
-   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-     ("http" . "127.0.0.1:3128")
-     ("https" . "127.0.0.1:3128"))))
+        '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+          ("http" . "127.0.0.1:3128")
+          ("https" . "127.0.0.1:3128"))))
 
 ;; save-as functions
 (defun user/save-as-and-switch (filename)

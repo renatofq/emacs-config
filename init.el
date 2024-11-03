@@ -433,7 +433,19 @@
   (setq completion-category-overrides '((eglot (styles orderless))))
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
-              (eglot-inlay-hints-mode -1))))
+              (eglot-inlay-hints-mode -1)))
+  :config
+  (add-to-list 'eglot-server-programs
+               '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
+                 . ("clangd"
+                       "-j=4"
+                       "--log=error"
+                       "--malloc-trim"
+                       "--background-index"
+                       "--clang-tidy"
+                       "--cross-file-rename"
+                       "--completion-style=detailed"
+                       "--pch-storage=memory"))))
 
 ;; crux
 (use-package crux
@@ -576,6 +588,12 @@
 (use-package c-ts-mode
   :config
   (add-hook 'c-ts-mode-hook 'eglot-ensure))
+
+(use-package c-mode
+  :bind (:map c-mode-base-map
+              (("TAB" . user/c-indent-complete)))
+  :init
+  (add-hook 'c-mode-hook 'eglot-ensure))
 
 (use-package dockerfile-ts-mode
   :mode "\\(Dockerfile\\|Containerfile\\)")
