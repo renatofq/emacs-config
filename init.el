@@ -625,6 +625,9 @@
   (setq feature-default-i18n-file
         (expand-file-name "etc/gherkin-i18n.yml" user-emacs-directory)))
 
+(use-package ebnf-mode
+  :mode "\\.ebnf\\'")
+
 ;; eat + eshell
 (use-package eat
   :ensure t
