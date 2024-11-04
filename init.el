@@ -77,6 +77,7 @@
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 (setq-default tab-width 4)            ;; but maintain correct appearance
 (setq tab-always-indent 'complete)    ;; smart tab behavior - indent or complete
+(setq-default fill-column 80)         ;; wrap line at column 80
 
 ;; Emacs 30 and newer: Disable Ispell completion function.
 (setq text-mode-ispell-word-completion nil)
@@ -685,4 +686,13 @@
 (use-package dap-mode
   :after lsp-mode
   :config (dap-auto-configure-mode))
+
+(use-package gptel
+  :init
+  (setq gptel-model 'pix-auto-assistant:latest
+        gptel-backend (gptel-make-ollama "pix-auto-assistant"
+                        :host "localhost:11434"
+                        :stream t
+                        :models '(pix-auto-assistant:latest)))
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 ;;; Experimental end
