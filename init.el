@@ -60,6 +60,9 @@
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; keep a sigle dired buffer
+(setq dired-kill-when-opening-new-dired-buffer t)
+
 ;; disable dialog box
 (setq use-dialog-box nil)
 
@@ -117,6 +120,12 @@
    used by different modes that clutter 'user-emacs-directory' and should not be
    versioned."
   (file-name-concat user-emacs-directory "varfile" filename))
+
+;; Move text M-up and down to
+(use-package move-text
+  :ensure t
+  :init
+  (move-text-default-bindings))
 
 ;; project
 (use-package project
