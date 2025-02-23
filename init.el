@@ -479,18 +479,6 @@
   :config
   (load-theme 'modus-vivendi-tinted t))
 
-;; smartparens
-(use-package smartparens
-  :ensure t
-  :diminish smartparens-mode
-  :init
-  (smartparens-global-mode)
-  :config
-  (sp-local-pair
-   '(emacs-lisp-mode clojure-mode fennel-mode scheme-mode)
-   "'" "'" :actions nil)
-  (sp-pair "\\[" "\\]" :actions '(insert wrap autoskip navigate)))
-
 ;; rg.el -- ripgrep
 (use-package rg
   :init
@@ -511,12 +499,8 @@
 ;; Lisp family ----------------
 (use-package paredit
   :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-  ;; enable in the *scratch* buffer
-  (add-hook 'lisp-interaction-mode-hook #'paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
-  (diminish 'paredit-mode "()"))
+  :diminish "()"
+  :hook (emacs-lisp-mode lisp-interaction-mode eval-expression-minibuffer-setup))
 
 (use-package rainbow-delimiters
   :ensure t)
@@ -532,7 +516,6 @@
 
 (use-package scheme
   :requires paredit
-  :diminish paredit
   :config
   (add-hook 'scheme-mode-hook #'paredit-mode)
   (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
@@ -549,9 +532,6 @@
               (eglot-ensure))))
 
 ;; Clojure
-(use-package clj-refactor
-  :ensure t)
-
 (use-package flymake-kondor
   :ensure t)
 
@@ -562,10 +542,8 @@
             (lambda ()
               (paredit-mode 1)
               (rainbow-delimiters-mode 1)
-              (clj-refactor-mode 1)
               (flymake-kondor-setup)
-              (flymake-mode t)
-              (cljr-add-keybindings-with-prefix "C-c C-m"))))
+              (flymake-mode t))))
 
 (use-package cider
   :ensure t
