@@ -113,7 +113,7 @@
                :language 'mermaid
                :override t
                :feature 'comment
-               '((comment) @font-lock-comment-face)
+               "((comment) @font-lock-comment-face)"
 
                :language 'mermaid
                :override t
@@ -173,8 +173,7 @@
                  (sequence_stmt_opt . \"opt\"  @font-lock-constant-face)
                  (sequence_stmt_par . \"par\"  @font-lock-constant-face)
                  (sequence_stmt_note .
-                                     \"note
-                                     \"
+                                     \"note\"
                                      @font-lock-constant-face
                                      .
                                      [(sequence_note_placement)
