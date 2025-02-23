@@ -653,33 +653,4 @@
 ;;; init.el ends here
 
 ;; Experimental
-(use-package lsp-mode
-  :hook
-  ((lsp-mode . lsp-enable-which-key-integration)))
-
-(use-package lsp-java
-  :init
-  (setq lsp-java-server-install-dir (expand-file-name "jdtls/" (xdg-data-home))
-        lsp-java-workspace-dir (expand-file-name "jdtls/" (xdg-state-home))
-        lsp-java-workspace-cache-dir (expand-file-name "jdtls/" (xdg-cache-home)))
-
-  :config
-  (setq lsp-headerline-breadcrumb-enable nil)
-  (add-hook 'java-ts-mode-hook
-            (lambda ()
-              (yas-minor-mode 1)
-              (lsp))))
-
-(use-package dap-mode
-  :after lsp-mode
-  :config (dap-auto-configure-mode))
-
-(use-package gptel
-  :init
-  (setq gptel-model 'pix-auto-assistant:latest
-        gptel-backend (gptel-make-ollama "pix-auto-assistant"
-                        :host "localhost:11434"
-                        :stream t
-                        :models '(pix-auto-assistant:latest)))
-  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 ;;; Experimental end
