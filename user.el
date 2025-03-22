@@ -109,4 +109,36 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (defun user/org-confirm-babel-evaluate (lang body)
   (not (member lang '("scheme" "dot"))))
+
+;; some legacy but, pehaps useful functions
+(defun user/--xml-try-move-up-element ()
+  (condition-case nil
+      (progn
+        (nxml-backward-up-element)      ; always returns nil
+        t)
+    (error nil)))
+
+(defun user/xpath (exclusions)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (named-let rec ((path nil))
+        (if (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                 (user/--xml-try-move-up-element))
+            (if-let* ((tagname (xmltok-start-tag-local-name))
+                      ((seq-contains-p exclusions tagname 'string=)))
+              (rec path)
+              (rec  (cons (xmltok-start-tag-local-name) path)))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+
+
+(defun user/xpath-pix-auto ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let* ((xpath (user/xpath '("Envelope" "Document")))
+         (result (format "XPath na PAIN.013: '/%s'" xpath)))
+    (when (called-interactively-p t)
+      (kill-new result)
+      (message result))
+    result))
 ;;; user.el ends here

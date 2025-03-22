@@ -134,6 +134,13 @@
 (use-package diminish
   :ensure t)
 
+;; theme
+(use-package modus-themes
+  :ensure t
+  :config
+  (load-theme 'modus-vivendi-tinted t))
+
+
 ;; Move text M-up and down to
 (use-package move-text
   :ensure t
@@ -269,13 +276,11 @@
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
          ;; C-x bindings in `ctl-x-map'
-         ("C-x M-:" . consult-complex-command) ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer) ;; orig. switch-to-buffer
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
-         ("C-x t b" . consult-buffer-other-tab) ;; orig. switch-to-buffer-other-tab
-         ("C-x r b" . consult-bookmark)         ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer) ;; orig. project-switch-to-buffer
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
          ;; Custom M-# bindings for fast register access
          ("M-#" . consult-register-load)
          ("M-'" . consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
@@ -284,16 +289,16 @@
          ("M-y" . consult-yank-pop) ;; orig. yank-pop
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake) ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)   ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line) ;; orig. goto-line
-         ("M-g o" . consult-outline) ;; Alternative: consult-org-heading
+         ("M-g f" . consult-flymake)       ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)     ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)   ;; orig. goto-line
+         ("M-g o" . consult-outline)       ;; Alternative: consult-org-heading
          ("M-g m" . consult-mark)
          ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-imenu-multi)
          ;; M-s bindings in `search-map'
-         ("M-s d" . consult-find) ;; Alternative: consult-fd
+         ("M-s d" . consult-find)        ;; Alternative: consult-fd
          ("M-s c" . consult-locate)
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
@@ -305,13 +310,13 @@
          ;; Isearch integration
          ("M-s e" . consult-isearch-history)
          :map isearch-mode-map
-         ("M-e" . consult-isearch-history) ;; orig. isearch-edit-string
+         ("M-e" . consult-isearch-history)   ;; orig. isearch-edit-string
          ("M-s e" . consult-isearch-history) ;; orig. isearch-edit-string
-         ("M-s l" . consult-line) ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi) ;; needed by consult-line to detect isearch
+         ("M-s l" . consult-line)            ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)      ;; needed by consult-line to detect isearch
          ;; Minibuffer history
          :map minibuffer-local-map
-         ("M-s" . consult-history) ;; orig. next-matching-history-element
+         ("M-s" . consult-history)  ;; orig. next-matching-history-element
          ("M-r" . consult-history)) ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
@@ -437,7 +442,13 @@
   :config
   (global-diff-hl-mode +1))
 
+;; rg.el -- ripgrep
+(use-package rg
+  :init
+  (rg-enable-default-bindings))
 
+;;;; Programming settings ------------------------------------------------
+;; Eglot
 (use-package eglot-tempel
   :init
   (eglot-tempel-mode t))
@@ -464,29 +475,6 @@
                     "--completion-style=detailed"
                     "--pch-storage=memory"))))
 
-(use-package eglot-java
-  :ensure t
-  :init
-  (setq eglot-java-server-install-dir
-        (file-name-concat (xdg-data-home) "eclipse.jdt.ls"))
-  :config (add-to-list 'eglot-java-eclipse-jdt-args
-                       (concat  "-javaagent:"
-                                (file-name-concat (xdg-data-home)
-                                                  "lombok"
-                                                  "lombok.jar"))))
-
-;; theme
-(use-package modus-themes
-  :ensure t
-  :config
-  (load-theme 'modus-vivendi-tinted t))
-
-;; rg.el -- ripgrep
-(use-package rg
-  :init
-  (rg-enable-default-bindings))
-
-;;;; Language specific settings ------------------------------------------------
 ;; Lisp family ----------------
 (use-package paredit
   :ensure t
@@ -543,6 +531,18 @@
         cider-enrich-classpath t
         cider-use-overlays nil
         cider-repl-display-help-banner nil))
+
+;; Java -------------------------
+(use-package eglot-java
+  :ensure t
+  :init
+  (setq eglot-java-server-install-dir
+        (file-name-concat (xdg-data-home) "eclipse.jdt.ls"))
+  :config (add-to-list 'eglot-java-eclipse-jdt-args
+                       (concat  "-javaagent:"
+                                (file-name-concat (xdg-data-home)
+                                                  "lombok"
+                                                  "lombok.jar"))))
 
 ;; Other languages --------------
 ;; Cobol
@@ -639,7 +639,6 @@
           (concat (user/shortened-path (eshell/pwd) 32)
                   (if (= (user-uid) 0) " Λ " " λ ")))))
 ;;; init.el ends here
-
 ;; Experimental
 (use-package gptel
   :init
@@ -649,36 +648,4 @@
                         :stream t
                         :models '(deepseek-r1:8b llama3.1:8b)))
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
-
-(defun user/--xml-try-move-up-element ()
-  (condition-case nil
-      (progn
-        (nxml-backward-up-element) ; always returns nil
-        t)
-    (error nil)))
-
-(defun user/xpath (exclusions)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (named-let rec ((path nil))
-        (if (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
-                 (user/--xml-try-move-up-element))
-            (if-let* ((tagname (xmltok-start-tag-local-name))
-                      ((seq-contains-p exclusions tagname 'string=)))
-              (rec path)
-              (rec  (cons (xmltok-start-tag-local-name) path)))
-          (format "/%s" (mapconcat 'identity path "/")))))))
-
-
-(defun user/xpath-pix-auto ()
-  "Display the hierarchy of XML elements the point is on as a path."
-  (interactive)
-  (let* ((xpath (user/xpath '("Envelope" "Document")))
-         (result (format "XPath na PAIN.013: '/%s'" xpath)))
-    (when (called-interactively-p t)
-      (kill-new result)
-      (message result))
-    result))
-
 ;;; Experimental end
