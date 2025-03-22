@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: node, nvm, fish
 ;; License: GNU General Public License = 3
-;; Package-Requires: ((emacs "30.50"))
+;; Package-Requires: ((emacs "30.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -46,7 +46,12 @@
   (expand-file-name version nvm-install-path))
 
 (defun nvm--installed-versions ()
-  (directory-files nvm-install-path nil "^v"))
+  (mapcar (lambda (file) (cons file nil))
+   (directory-files nvm-install-path nil "^v")))
+
+(defun nvm--find-exact-version-for (version)
+  "Returns the exact version of the node installation"
+  nil)
 
 ;;;###autoload
 (defun nvm-use (version)

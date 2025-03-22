@@ -14,105 +14,114 @@
 (user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
 (provide 'init)
 
-;;;; UX setup
-;; disable tool-bar menu-bar and scroll-bar
-(tool-bar-mode -1)
+(use-package emacs
+  :init
+  ;;;; UX setup
+  ;; disable tool-bar menu-bar and scroll-bar
+  (tool-bar-mode -1)
 
-;; Disable scroll-bar
-(scroll-bar-mode -1)
+  ;; Disable scroll-bar
+  (scroll-bar-mode -1)
 
-;; maximize the initial frame automatically
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; Disable the blinking cursor
+  (blink-cursor-mode -1)
 
-;; font
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
-(add-to-list 'default-frame-alist '(line-spacing . 0.1))
+  ;; maximize the initial frame automatically
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-;; ediff-split horizontally
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; font
+  (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-12"))
+  ;; (add-to-list 'default-frame-alist '(line-spacing . 0.1))
 
-;; the blinking cursor is nothing, but an annoyance
-(blink-cursor-mode -1)
 
-;; disable the annoying bell ring
-(setq ring-bell-function 'ignore)
+  ;; mode line settings
+  (line-number-mode t)
+  (column-number-mode t)
+  (size-indication-mode t)
 
-;; disable startup screen
-(setq inhibit-startup-screen t)
+  ;; highlight the current line
+  (global-hl-line-mode +1)
 
-;; nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
+  ;; disable the annoying bell ring
+  (setq ring-bell-function 'ignore)
 
-(when (fboundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-precision-mode t))
+  ;; disable startup screen
+  (setq inhibit-startup-screen t)
 
-;; mode line settings
-(line-number-mode t)
-(column-number-mode t)
-(size-indication-mode t)
+  ;; nice scrolling
+  (setq scroll-margin 0
+        scroll-conservatively 100000
+        scroll-preserve-screen-position 1)
 
-;; highlight the current line
-(global-hl-line-mode +1)
+  (when (fboundp 'pixel-scroll-precision-mode)
+    (pixel-scroll-precision-mode t))
 
-;; enable y/n answers
-(fset 'yes-or-no-p 'y-or-n-p)
+  ;; enable y/n answers
+  (fset 'yes-or-no-p 'y-or-n-p)
 
-;; keep a sigle dired buffer
-(setq dired-kill-when-opening-new-dired-buffer t)
+  ;; keep a sigle dired buffer
+  (setq dired-kill-when-opening-new-dired-buffer t)
 
-;; disable dialog box
-(setq use-dialog-box nil)
+  ;; disable dialog box
+  (setq use-dialog-box nil)
 
-;; more useful frame title, that show either a file or a
-;; buffer name (if the buffer isn't visiting a file)
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+  ;; Move through windows with Shift-<arrow keys>
+  (windmove-default-keybindings)
 
-;; Move through windows with Shift-<arrow keys>
-(windmove-default-keybindings)
+  ;; ediff-split horizontally
+  (setq ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain)
 
-;;;; Editor setup
-(setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
-(setq-default tab-width 4)            ;; but maintain correct appearance
-(setq tab-always-indent 'complete)    ;; smart tab behavior - indent or complete
-(setq-default fill-column 80)         ;; wrap line at column 80
+  ;; more useful frame title, that show either a file or a
+  ;; buffer name (if the buffer isn't visiting a file)
+  (setq frame-title-format
+        '((:eval (if (buffer-file-name)
+                     (abbreviate-file-name (buffer-file-name))
+                   "%b"))))
 
-;; Emacs 30 and newer: Disable Ispell completion function.
-(setq text-mode-ispell-word-completion nil)
+  ;;;; Editor setup
+  (setq-default indent-tabs-mode  nil       ;; don't use tabs to indent
+                tab-width         4         ;; but maintain correct appearance
+                tab-always-indent 'complete ;; smart tab behavior - indent or complete
+                fill-column 80)             ;; wrap line at column 80
 
-;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current mode.
-(setq read-extended-command-predicate #'command-completion-default-include-p)
+  ;; Emacs 30 and newer: Disable Ispell completion function.
+  (setq text-mode-ispell-word-completion nil)
 
-;; end of sentence is not double spaces
-(setq sentence-end-double-space nil)
+  ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current mode.
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
 
-;; newline at end of file
-(setq require-final-newline t)
+  ;; newline at end of file
+  (setq require-final-newline t)
 
-;; delete the selection with a keypress
-(delete-selection-mode t)
+  ;; delete the selection with a keypress
+  (delete-selection-mode t)
 
-;; store all backup and autosave files in the tmp dir
-(setq backup-by-copying t)
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+  ;; kill the whole when at the start of it
+  (setq kill-whole-line t)
 
-;; revert buffers automatically when underlying files are changed externally
-(setq global-auto-revert-non-file-buffers t)
-(global-auto-revert-mode t)
+  ;; store all backup and autosave files in the tmp dir
+  (setq backup-by-copying t)
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
 
-;; dabbrev-expand
-(global-set-key (kbd "M-/") 'dabbrev-expand)
+  ;; revert buffers automatically when underlying files are changed externally
+  (setq global-auto-revert-non-file-buffers t)
+  (global-auto-revert-mode t)
 
-;; replace buffer-menu with ibuffer
-(global-set-key (kbd "C-x C-b") #'ibuffer)
+  ;; replace buffer-menu with ibuffer
+  (global-set-key (kbd "C-x C-b") #'ibuffer)
+
+  ;; Enable tree-sitter for some major modes
+  (setq major-mode-remap-alist
+        '((json-mode . json-ts-mode)
+          (yaml-mode . yaml-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode)
+          (c-mode . c-ts-mode)
+          (java-mode . java-ts-mode))))
 
 ;; define a unified place to all generated/data
 (defun varfile-name (filename)
@@ -120,6 +129,10 @@
    used by different modes that clutter 'user-emacs-directory' and should not be
    versioned."
   (file-name-concat user-emacs-directory "varfile" filename))
+
+;; cleanup modeline
+(use-package diminish
+  :ensure t)
 
 ;; Move text M-up and down to
 (use-package move-text
@@ -196,10 +209,6 @@
         uniquify-after-kill-buffer-p t       ; rename after killing uniquified
         uniquify-ignore-buffers-re "^\\*"))  ; don't muck with special buffers
 
-;; cleanup modeline
-(use-package diminish
-  :ensure t)
-
 ;; Orderless, Vertico and Marginalia
 (use-package orderless
   :ensure t
@@ -216,19 +225,13 @@
 ;; Enable rich annotations at minibuffer using the Marginalia package
 (use-package marginalia
   :ensure t
-  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-  ;; available in the *Completions* buffer, add it to the
-  ;; `completion-list-mode-map'.
-  :bind (:map minibuffer-local-map
-              ("M-A" . marginalia-cycle))
-
-  ;; The :init section is always executed.
   :init
-  ;; Marginalia must be activated in the :init section of use-package such that
-  ;; the mode gets enabled right away. Note that this forces loading the
-  ;; package.
   (marginalia-mode))
 
+;; Tempel
+(use-package tempel
+  :ensure t
+  :bind (("M-+" . tempel-expand)))
 
 ;; Corfu
 (use-package corfu
@@ -347,8 +350,9 @@
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-  )
+  (define-key consult-narrow-map
+              (vconcat consult-narrow-key "?")
+              #'consult-narrow-help))
 
 ;; undo-tree
 (use-package undo-tree
@@ -433,45 +437,43 @@
   :config
   (global-diff-hl-mode +1))
 
-;; eglot
-(use-package yasnippet
-  :ensure t
+
+(use-package eglot-tempel
   :init
-  (setq yas-snippet-dirs
-        `(,(expand-file-name "snippets" user-emacs-directory))))
+  (eglot-tempel-mode t))
 
 (use-package eglot
   :ensure t
+  :bind (("M-RET" . eglot-code-actions))
   :init
   (setq completion-category-overrides '((eglot (styles orderless))))
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
               (eglot-inlay-hints-mode -1)))
   :config
+  (setq eglot-report-progress nil)
   (add-to-list 'eglot-server-programs
                '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
                  . ("clangd"
-                       "-j=4"
-                       "--log=error"
-                       "--malloc-trim"
-                       "--background-index"
-                       "--clang-tidy"
-                       "--cross-file-rename"
-                       "--completion-style=detailed"
-                       "--pch-storage=memory"))))
+                    "-j=4"
+                    "--log=error"
+                    "--malloc-trim"
+                    "--background-index"
+                    "--clang-tidy"
+                    "--cross-file-rename"
+                    "--completion-style=detailed"
+                    "--pch-storage=memory"))))
 
-;; crux
-(use-package crux
+(use-package eglot-java
   :ensure t
-  :bind (("C-k" . crux-smart-kill-line)
-         ("C-S-k" . crux-kill-whole-line)
-         ("C-S-RET" . crux-smart-open-line-above)
-         ("S-RET" . crux-smart-open-line)
-         ("C-a" . crux-move-beginning-of-line))
-  :config
-  (crux-with-region-or-buffer indent-region)
-  (crux-with-region-or-buffer untabify)
-  (crux-with-region-or-line comment-or-uncomment-region))
+  :init
+  (setq eglot-java-server-install-dir
+        (file-name-concat (xdg-data-home) "eclipse.jdt.ls"))
+  :config (add-to-list 'eglot-java-eclipse-jdt-args
+                       (concat  "-javaagent:"
+                                (file-name-concat (xdg-data-home)
+                                                  "lombok"
+                                                  "lombok.jar"))))
 
 ;; theme
 (use-package modus-themes
@@ -485,22 +487,11 @@
   (rg-enable-default-bindings))
 
 ;;;; Language specific settings ------------------------------------------------
-;; Enable tree-sitter for some major modes
-(use-package emacs
-  :init
-  (setq major-mode-remap-alist
-        '((json-mode . json-ts-mode)
-          (yaml-mode . yaml-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)
-          (c-mode . c-ts-mode)
-          (java-mode . java-ts-mode))))
-
 ;; Lisp family ----------------
 (use-package paredit
   :ensure t
   :diminish "()"
-  :hook (emacs-lisp-mode lisp-interaction-mode eval-expression-minibuffer-setup))
+  :hook (emacs-lisp-mode lisp-interaction-mode))
 
 (use-package rainbow-delimiters
   :ensure t)
@@ -548,14 +539,14 @@
 (use-package cider
   :ensure t
   :config
-  (setq nrepl-log-messages t)
-  (setq cider-enrich-classpath t)
-  (setq cider-use-overlays nil))
+  (setq nrepl-log-messages t
+        cider-enrich-classpath t
+        cider-use-overlays nil
+        cider-repl-display-help-banner nil))
 
 ;; Other languages --------------
 ;; Cobol
-(use-package cobol-mode
-  :mode "\\.cbl\\'")
+(use-package cobol-mode)
 
 ;; Javascript + Typescript
 (use-package typescript-ts-mode
@@ -570,7 +561,7 @@
 (use-package nvm
   :config
   ;; default node version
-  (nvm-use "v20.15.1"))
+  (nvm-use "v20.18.3"))
 
 (use-package js-comint
   :config
@@ -606,9 +597,6 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((plantuml . t))))
-
-(use-package text-mode
-  :mode "\\.\\(txt|xml\\)\\'")
 
 (use-package feature-mode
   :mode "\\.feature\\'"
@@ -653,4 +641,44 @@
 ;;; init.el ends here
 
 ;; Experimental
+(use-package gptel
+  :init
+  (setq gptel-model 'deepseek-r1:8b
+        gptel-backend (gptel-make-ollama "local ollama"
+                        :host "localhost:11434"
+                        :stream t
+                        :models '(deepseek-r1:8b llama3.1:8b)))
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+
+(defun user/--xml-try-move-up-element ()
+  (condition-case nil
+      (progn
+        (nxml-backward-up-element) ; always returns nil
+        t)
+    (error nil)))
+
+(defun user/xpath (exclusions)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (named-let rec ((path nil))
+        (if (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                 (user/--xml-try-move-up-element))
+            (if-let* ((tagname (xmltok-start-tag-local-name))
+                      ((seq-contains-p exclusions tagname 'string=)))
+              (rec path)
+              (rec  (cons (xmltok-start-tag-local-name) path)))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+
+
+(defun user/xpath-pix-auto ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let* ((xpath (user/xpath '("Envelope" "Document")))
+         (result (format "XPath na PAIN.013: '/%s'" xpath)))
+    (when (called-interactively-p t)
+      (kill-new result)
+      (message result))
+    result))
+
 ;;; Experimental end
