@@ -1,4 +1,4 @@
-;; package --- Emacs user file
+;; package --- Emacs user file -*- lexical-binding: t -*-
 (defun user/c-indent-complete ()
     (interactive)
     (let ((p (point)))

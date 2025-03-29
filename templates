@@ -106,6 +106,17 @@ org-mode
 (inlsrc "src_" p "{" q "}")
 (title "#+title: " p n "#+author: " p n "#+language: " p n)
 
+fundamental-mode
+
+(defeito "Pré-condições:"
+         n> "- " p n n
+         "Passos para reproduzir:"
+         n> "- " p n n
+         "Resultado esperado:"
+         n> "- " p n n
+         "Resultado obtido:"
+         n> "- " r n)
+
 ;; Local Variables:
 ;; mode: lisp-data
 ;; outline-regexp: "[a-z]"

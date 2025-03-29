@@ -6,14 +6,14 @@
 ;; load user defined
 (load (expand-file-name "user.el" user-emacs-directory))
 
+;;;; Load "vendor" directory
+(user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
+
 ;; add melpa-stable
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-;;;; Load "vendor" directory
-(user/load-all-in-directory (expand-file-name "vendor" user-emacs-directory))
 (provide 'init)
-
 (use-package emacs
   :init
   ;;;; UX setup
@@ -30,8 +30,8 @@
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   ;; font
-  (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-12"))
-  ;; (add-to-list 'default-frame-alist '(line-spacing . 0.1))
+  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
+  (add-to-list 'default-frame-alist '(line-spacing . 0.1))
 
 
   ;; mode line settings
@@ -205,8 +205,11 @@
 
 (use-package jinx
   :ensure t
+  :hook text-mode
   :bind (("M-$" . jinx-correct)
-         ("C-M-$" . jinx-languages)))
+         ("C-M-$" . jinx-languages))
+  :init
+  (setq jinx-languages "en_US pt_BR"))
 
 ;; meaningful names for buffers with the same name
 (use-package uniquify
@@ -258,7 +261,7 @@
 ;; Part of corfu
 (use-package corfu-popupinfo
   :after corfu
-  :hook (corfu-mode . corfu-popupinfo-mode)
+  :hook corfu-mode
   :custom
   ;; (corfu-popupinfo-delay '(0.25 . 0.1))
   (corfu-popupinfo-hide nil)
@@ -392,36 +395,55 @@
 
 ;; org-mode
 (use-package org
-  :init
-  (setq org-directory (file-name-concat (xdg-user-dir "DOCUMENTS") "org/"))
-  (setq org-default-notes-file (file-name-concat org-directory "inbox.org"))
-  (setq org-capture-templates
-        '(("t" "Todo" entry
-           (file+headline (file-name-concat org-directory "tasks.org") "Tarefas")
-           "* TODO %?\n  %i\n  %a")
-          ("j" "Journal" entry
-           (file+datetree (file-name-concat org-directory "journal.org"))
-           "* %?\nEm %U\n  %i\n  %a")))
+  :bind
+  (("C-c c" . org-capture))
 
+  :config
   ;; default indentation on code blocks
   (setq org-edit-src-content-indentation 0)
 
   ;; org-babel
+  (setq org-confirm-babel-evaluate 'user/org-confirm-babel-evaluate)
+  (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((scheme . t)
      (emacs-lisp . nil)
      (dot . t)))
 
-  (setq org-confirm-babel-evaluate 'user/org-confirm-babel-evaluate)
-
-  (add-hook 'org-mode-hook #'olivetti-mode)
-  (add-hook 'org-mode-hook #'jinx-mode)
-  (add-hook 'org-mode-hook #'user/org-setup-<>-syntax-fix)
-
-  :config
+  ;; org-latex
   (add-to-list 'org-latex-packages-alist
                '("AUTO" "babel" t ("pdflatex" "xelatex" "lualatex"))))
+
+(use-package denote
+  :ensure t
+  :after org
+  :hook (dired-mode . denote-dired-mode)
+  :bind
+  (("C-c n n" . denote)
+   ("C-c n r" . denote-rename-file)
+   ("C-c n l" . denote-link)
+   ("C-c n b" . denote-backlinks)
+   ("C-c n d" . denote-sort-dired))
+  :init
+  (with-eval-after-load 'org-capture
+    (setq denote-org-capture-specifiers "%i\n%?")
+    (add-to-list 'org-capture-templates
+                 '("n" "New note (with Denote)" plain
+                   (file denote-last-path)
+                   #'denote-org-capture
+                   :no-save t
+                   :immediate-finish nil
+                   :kill-buffer t
+                   :jump-to-captured t)))
+  :config
+  (setq denote-directory (expand-file-name "~/notes/"))
+
+  ;; Automatically rename Denote buffers when opening them so that
+  ;; instead of their long file name they have, for example, a literal
+  ;; "[D]" followed by the file's title.  Read the doc string of
+  ;; `denote-rename-buffer-format' for how to modify this.
+  (denote-rename-buffer-mode 1))
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
