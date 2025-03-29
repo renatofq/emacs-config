@@ -196,9 +196,7 @@
 ;; whitespace-mode config
 (use-package whitespace
   :diminish whitespace-mode
-  :init
-  (dolist (hook '(prog-mode-hook text-mode-hook))
-    (add-hook hook #'whitespace-mode))
+  :hook (prog-mode text-mode conf-mode)
   :config
   (setq whitespace-line-column 80) ;; limit line length
   (setq whitespace-style '(face tabs empty trailing)))
@@ -388,7 +386,7 @@
   :bind (:map markdown-mode-map
               ("C-c C-e" . markdown-do)
               ("C-c ." . markdown-edit-code-block))
-  :init
+  :config
   (setq markdown-command "pandoc")
   (setq markdown-fontify-code-blocks-natively t)
   (add-to-list 'markdown-code-lang-modes '("mermaid" . mermaid-ts-mode)))
@@ -560,11 +558,12 @@
   :init
   (setq eglot-java-server-install-dir
         (file-name-concat (xdg-data-home) "eclipse.jdt.ls"))
-  :config (add-to-list 'eglot-java-eclipse-jdt-args
-                       (concat  "-javaagent:"
-                                (file-name-concat (xdg-data-home)
-                                                  "lombok"
-                                                  "lombok.jar"))))
+  :config
+  (add-to-list 'eglot-java-eclipse-jdt-args
+               (concat  "-javaagent:"
+                        (file-name-concat (xdg-data-home)
+                                          "lombok"
+                                          "lombok.jar"))))
 
 ;; Other languages --------------
 ;; Cobol
