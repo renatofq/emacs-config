@@ -114,6 +114,9 @@
   ;; replace buffer-menu with ibuffer
   (global-set-key (kbd "C-x C-b") #'ibuffer)
 
+  ;; bind user/switch-to-scratch-buffer
+  (global-set-key (kbd "C-c u b") #'user/switch-to-scratch-buffer)
+
   ;; Enable tree-sitter for some major modes
   (setq major-mode-remap-alist
         '((json-mode . json-ts-mode)

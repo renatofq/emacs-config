@@ -14,6 +14,64 @@
           ("http" . "127.0.0.1:3128")
           ("https" . "127.0.0.1:3128"))))
 
+;; custom-scratch buffer
+(defvar user/scratch-buffer-mode-alist
+  '(("clojure"     . clojure-mode)
+    ("cobol"       . cobol-mode)
+    ("config"      . conf-mode)
+    ("fundamental" . fundamental-mode)
+    ("java"        . java-mode)
+    ("javascript"  . js2-mode)
+    ("json"        . js-json-mode)
+    ("markdown"    . markdown-mode)
+    ("org"         . org-mode)
+    ("sql"         . sql-mode)
+    ("typescript"  . typescript-mode)
+    ("yaml"        . yaml-ts-mode))
+
+  "Alist of NAME and MODE of the modes that can be used as major mode for
+creating user/scratch-buffer.")
+
+(defvar user/scratch-buffer-mode-default
+  "fundamental"
+  "Default mode to be used when creating a user/scratch-buffer.  Its value must
+be an existing entry of `user/scratch-buffer-mode-alist'.")
+
+(defun user/select-scratch-buffer-mode (default)
+  "Selects a major mode for a scratch buffer.
+
+If DEFAULT is non-nil returns the value of `user/scratch-buffer-mode-default'.
+Otherwise, calss `completing-read' to select a mode from
+`user/scratch-buffer-mode-alist'."
+  (assoc (if default
+             user/scratch-buffer-mode-default
+           (completing-read "Major mode: "
+                            user/scratch-buffer-mode-alist
+                            nil t nil nil
+                            user/scratch-buffer-mode-default))
+         user/scratch-buffer-mode-alist))
+
+(defun user/get-scratch-buffer (mode)
+  "Return a user/scratch-buffer specified by MODE, creating a new one if needed.
+
+MODE must be a cons cell where CAR is the name and CDR is a symbol bound to a
+major mode function."
+  (let ((buffer (get-buffer-create (concat "*" (car mode) "-scratch*"))))
+    (with-current-buffer buffer
+      (funcall (cdr mode)))
+    buffer))
+
+(defun user/switch-to-scratch-buffer (arg)
+  "Switch to a user/scratch-buffer with a major mode.
+
+When called with prefix argument uses `user/scratch-buffer-mode-default'.
+Otherwise, calls `completing-read' to select a mode from
+`user/scratch-buffer-mode-alist'."
+  (interactive "P")
+  (switch-to-buffer
+   (user/get-scratch-buffer
+    (user/select-scratch-buffer-mode arg))))
+
 ;; save-as functions
 (defun user/save-as-and-switch (filename)
   "Clone the current buffer and switch to the clone"
