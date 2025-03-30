@@ -33,7 +33,7 @@ emacs-lisp-mode
 (group "(defgroup " p " nil\n  \"" p "\"" n> ":group '" p n> ":prefix \"" p "-\")")
 (macro "(defmacro " p " (" p ")\n  \"" p "\"" n> r> ")")
 (alias "(defalias '" p " '" p ")")
-(fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
+(defun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
 (iflet "(if-let (" p ")" n> r> ")")
 (whenlet "(when-let (" p ")" n> r> ")")
 (iflet* "(if-let* (" p ")" n> r> ")")

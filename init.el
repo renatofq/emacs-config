@@ -121,7 +121,8 @@
           (js2-mode . js-ts-mode)
           (typescript-mode . typescript-ts-mode)
           (c-mode . c-ts-mode)
-          (java-mode . java-ts-mode))))
+          (java-mode . java-ts-mode)
+          (markdown-mode . markdown-ts-mode))))
 
 ;; define a unified place to all generated/data
 (defun varfile-name (filename)
@@ -397,6 +398,9 @@
   (("C-c c" . org-capture))
 
   :config
+  ;; time formats
+  (setq org-display-custom-times t)
+
   ;; default indentation on code blocks
   (setq org-edit-src-content-indentation 0)
 
@@ -418,7 +422,7 @@
   :after org
   :hook (dired-mode . denote-dired-mode)
   :bind
-  (("C-c n n" . denote)
+  (("C-c n n" . denote-region)
    ("C-c n r" . denote-rename-file)
    ("C-c n l" . denote-link)
    ("C-c n b" . denote-backlinks)
@@ -435,13 +439,7 @@
                    :kill-buffer t
                    :jump-to-captured t)))
   :config
-  (setq denote-directory (expand-file-name "~/notes/"))
-
-  ;; Automatically rename Denote buffers when opening them so that
-  ;; instead of their long file name they have, for example, a literal
-  ;; "[D]" followed by the file's title.  Read the doc string of
-  ;; `denote-rename-buffer-format' for how to modify this.
-  (denote-rename-buffer-mode 1))
+  (setq denote-directory (expand-file-name "~/notes/")))
 
 ;; use settings from .editorconfig file when present
 (use-package editorconfig
