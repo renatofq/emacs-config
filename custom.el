@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -92,11 +93,11 @@
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" default))
  '(package-selected-packages
    '(cider consult corfu denote diff-hl diminish eat edit-indirect editorconfig
-           ef-themes eglot-java eglot-tempel fish-mode flymake-kondor
-           geiser-guile gptel jinx js-comint just-mode magit marginalia
-           markdown-mode modus-themes move-text olivetti orderless paredit
-           pcmpl-args plantuml-mode rainbow-delimiters rg typescript-mode
-           undo-tree vertico which-key))
+           ef-themes eglot-java eglot-tempel feature-mode fish-mode
+           flymake-kondor geiser-guile gptel jinx js-comint just-mode magit
+           marginalia markdown-mode modus-themes move-text olivetti orderless
+           paredit pcmpl-args plantuml-mode rainbow-delimiters rg
+           typescript-mode undo-tree vertico which-key))
  '(safe-local-variable-values
    '((cider-repl-display-help-banner) (cider-clojure-cli-aliases "dev")
      (likec4-indent-offset . 2)

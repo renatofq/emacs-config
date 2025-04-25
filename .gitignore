@@ -14,3 +14,4 @@ snippets/
 /ellama-sessions/
 /.cache/
 /.lsp-session-v1
+/eglot-java-eclipse-jdt-cache/

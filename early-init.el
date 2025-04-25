@@ -1,3 +1,4 @@
+;; Early emacs initialization -*- lexical-binding: t; -*-
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 

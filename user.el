@@ -1,4 +1,12 @@
 ;; package --- Emacs user file -*- lexical-binding: t -*-
+(defun user/move-begining-of-line ()
+  "Move point to the beginning of line or beginning of indentation. Toggling between the two"
+  (interactive)
+  (let ((p (point)))
+    (back-to-indentation)
+    (when (= p (point))
+      (move-beginning-of-line 1))))
+
 (defun user/c-indent-complete ()
     (interactive)
     (let ((p (point)))
@@ -32,31 +40,23 @@
   "Alist of NAME and MODE of the modes that can be used as major mode for
 creating user/scratch-buffer.")
 
-(defvar user/scratch-buffer-mode-default
-  "fundamental"
-  "Default mode to be used when creating a user/scratch-buffer.  Its value must
-be an existing entry of `user/scratch-buffer-mode-alist'.")
-
-(defun user/select-scratch-buffer-mode (default)
+(defun user/select-scratch-buffer-mode ()
   "Selects a major mode for a scratch buffer.
-
-If DEFAULT is non-nil returns the value of `user/scratch-buffer-mode-default'.
-Otherwise, calss `completing-read' to select a mode from
-`user/scratch-buffer-mode-alist'."
-  (assoc (if default
-             user/scratch-buffer-mode-default
-           (completing-read "Major mode: "
-                            user/scratch-buffer-mode-alist
-                            nil t nil nil
-                            user/scratch-buffer-mode-default))
+Calls `completing-read' to select a mode from `user/scratch-buffer-mode-alist'."
+  (assoc (completing-read "Major mode: "
+                          user/scratch-buffer-mode-alist
+                          nil t)
          user/scratch-buffer-mode-alist))
 
-(defun user/get-scratch-buffer (mode)
+(defun user/get-scratch-buffer (mode arg)
   "Return a user/scratch-buffer specified by MODE, creating a new one if needed.
 
 MODE must be a cons cell where CAR is the name and CDR is a symbol bound to a
 major mode function."
-  (let ((buffer (get-buffer-create (concat "*" (car mode) "-scratch*"))))
+  (let* ((buffer-name (concat "*" (car mode) "-scratch*"))
+         (buffer (if arg
+                     (generate-new-buffer buffer-name)
+                   (get-buffer-create buffer-name))))
     (with-current-buffer buffer
       (funcall (cdr mode)))
     buffer))
@@ -70,7 +70,8 @@ Otherwise, calls `completing-read' to select a mode from
   (interactive "P")
   (switch-to-buffer
    (user/get-scratch-buffer
-    (user/select-scratch-buffer-mode arg))))
+    (user/select-scratch-buffer-mode)
+    arg)))
 
 ;; save-as functions
 (defun user/save-as-and-switch (filename)
