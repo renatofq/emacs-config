@@ -92,12 +92,14 @@
      "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7"
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" default))
  '(package-selected-packages
-   '(cider consult corfu denote diff-hl diminish eat edit-indirect editorconfig
-           ef-themes eglot-java eglot-tempel feature-mode fish-mode
-           flymake-kondor geiser-guile gptel jinx js-comint just-mode magit
-           marginalia markdown-mode modus-themes move-text olivetti orderless
-           paredit pcmpl-args plantuml-mode rainbow-delimiters rg
-           typescript-mode undo-tree vertico which-key))
+   '(cider clojure-mode consult corfu denote diff-hl difftastic diminish eat
+           edit-indirect editorconfig ef-themes eglot-java eglot-tempel
+           feature-mode fish-mode flymake-kondor geiser geiser-guile gptel jinx
+           js-comint just-mode magit marginalia markdown-mode modus-themes
+           move-text olivetti orderless paredit pcmpl-args plantuml-mode
+           rainbow-delimiters rg tempel typescript-mode vertico vundo which-key))
+ '(package-vc-selected-packages
+   '((difftastic :url "https://github.com/pkryger/difftastic.el.git")))
  '(safe-local-variable-values
    '((cider-repl-display-help-banner) (cider-clojure-cli-aliases "dev")
      (likec4-indent-offset . 2)

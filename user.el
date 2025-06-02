@@ -7,12 +7,23 @@
     (when (= p (point))
       (move-beginning-of-line 1))))
 
+(defun user/keyboard-quit ()
+  "Smater version of the built-in `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it."
+  (interactive)
+  (if (> (minibuffer-depth) 0)
+    (abort-recursive-edit)
+    (keyboard-quit)))
+
 (defun user/c-indent-complete ()
-    (interactive)
-    (let ((p (point)))
-      (c-indent-line-or-region)
-      (when (= p (point))
-        (call-interactively 'complete-symbol))))
+  (interactive)
+  (let ((p (point)))
+    (c-indent-line-or-region)
+    (when (= p (point))
+      (call-interactively 'complete-symbol))))
 
 (defun user/proxy-bb-setup ()
   "Configura o proxy bb"

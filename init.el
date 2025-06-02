@@ -119,6 +119,9 @@
 
   (global-set-key (kbd "C-a") #'user/move-begining-of-line)
 
+  ;; remap keyboard-quit to a smarter version
+  (global-set-key [remap keyboard-quit] #'user/keyboard-quit)
+
   ;; Enable tree-sitter for some major modes
   (setq major-mode-remap-alist
         '((json-mode . json-ts-mode)
@@ -366,15 +369,7 @@
               (vconcat consult-narrow-key "?")
               #'consult-narrow-help))
 
-;; undo-tree
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :config
-  (setq undo-tree-history-directory-alist
-        `((".*" . ,temporary-file-directory)))
-  (setq undo-tree-auto-save-history t)
-  (global-undo-tree-mode))
+(use-package vundo)
 
 ;; which-key: shows a popup of available keybindings when typing a long key
 ;; sequence (e.g. C-x ...)
@@ -469,6 +464,16 @@
 (use-package rg
   :init
   (rg-enable-default-bindings))
+
+;; difftastic
+(use-package difftastic
+  :defer t
+  :vc (:url "https://github.com/pkryger/difftastic.el.git"
+       :rev :newest))
+
+(use-package difftastic-bindings
+  :ensure difftastic ;; or nil if you prefer manual installation
+  :config (difftastic-bindings-mode))
 
 ;;;; Programming settings ------------------------------------------------
 ;; Eglot
