@@ -227,12 +227,11 @@
   (interactive "fFilename: ")
   (let* ((input file-name)
          (output (concat (file-name-sans-extension input) mermaid-ts-output-format))
-         (exit-code (apply #'call-process mermaid-ts-mmdc-location nil "*mmdc*" nil (append (split-string mermaid-ts-flags " ") (list "-i" input "-o" output)))))
+         (exit-code (apply #'call-process mermaid-ts-mmdc-location nil "*mmdc*" nil (append (split-string mermaid-ts-flags " " t) (list "-i" input "-o" output)))))
     (if (zerop exit-code)
         (let ((buffer (find-file-noselect output t)))
           (display-buffer buffer)
-          (save-excursion
-            (set-buffer buffer)
+          (with-current-buffer buffer
             (auto-revert-mode)))
       (pop-to-buffer "*mmdc*"))))
 
@@ -245,7 +244,6 @@
     (define-key map (kbd "C-c C-b") 'mermaid-ts-compile-buffer)
     (define-key map (kbd "C-c C-r") 'mermaid-ts-compile-region)
     map))
-
 
 ;;;###autoload
 (define-derived-mode mermaid-ts-mode prog-mode "Mermaid[TS]"

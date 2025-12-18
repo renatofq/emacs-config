@@ -82,7 +82,8 @@
      (tramp-connection-local-default-system-profile (path-separator . ":")
                                                     (null-device . "/dev/null"))))
  '(custom-safe-themes
-   '("a75aff58f0d5bbf230e5d1a02169ac2fbf45c930f816f3a21563304d5140d245"
+   '("fff0dc54ff5a194ba6593d1cce0fbb4fe8cf9da59fcef47f9e06dec6ef11b1fa"
+     "a75aff58f0d5bbf230e5d1a02169ac2fbf45c930f816f3a21563304d5140d245"
      "fbf73690320aa26f8daffdd1210ef234ed1b0c59f3d001f342b9c0bbf49f531c"
      "2e7dc2838b7941ab9cabaa3b6793286e5134f583c04bde2fba2f4e20f2617cf7"
      "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4"
@@ -92,12 +93,12 @@
      "24168c7e083ca0bbc87c68d3139ef39f072488703dcdd82343b8cab71c0f62a7"
      "c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" default))
  '(package-selected-packages
-   '(cider clojure-mode consult corfu denote diff-hl difftastic diminish eat
-           edit-indirect editorconfig ef-themes eglot-java eglot-tempel
-           feature-mode fish-mode flymake-kondor geiser geiser-guile gptel jinx
-           js-comint just-mode magit marginalia markdown-mode modus-themes
-           move-text olivetti orderless paredit pcmpl-args plantuml-mode
-           rainbow-delimiters rg tempel typescript-mode vertico vundo which-key))
+   '(cider clojure-mode consult copilot corfu denote diminish eat edit-indirect
+           editorconfig ef-themes eglot-java eglot-tempel feature-mode fish-mode
+           flymake-kondor geiser geiser-guile gptel jinx js-comint just-mode
+           magit marginalia markdown-mode modus-themes move-text olivetti
+           orderless paredit pcmpl-args plantuml-mode rainbow-delimiters rg
+           tempel typescript-mode vertico vundo which-key))
  '(package-vc-selected-packages
    '((difftastic :url "https://github.com/pkryger/difftastic.el.git")))
  '(safe-local-variable-values

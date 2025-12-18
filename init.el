@@ -100,6 +100,9 @@
   ;; kill the whole when at the start of it
   (setq kill-whole-line t)
 
+  ;; enable electric pair
+  (electric-pair-mode +1)
+
   ;; store all backup and autosave files in the tmp dir
   (setq backup-by-copying t)
   (setq backup-directory-alist
@@ -590,7 +593,7 @@
 (use-package nvm
   :config
   ;; default node version
-  (nvm-use "v20.18.3"))
+  (nvm-use "v24.11.0"))
 
 (use-package js-comint
   :config
@@ -678,3 +681,4 @@
                         :models '(deepseek-r1:8b llama3.1:8b)))
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 ;;; Experimental end
+(put 'downcase-region 'disabled nil)

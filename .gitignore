@@ -15,3 +15,5 @@ snippets/
 /.cache/
 /.lsp-session-v1
 /eglot-java-eclipse-jdt-cache/
+/network-security.eld
+/tree-sitter/
