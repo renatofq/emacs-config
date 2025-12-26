@@ -480,13 +480,15 @@
 
 ;;;; Programming settings ------------------------------------------------
 ;; Eglot
-(use-package eglot-tempel
-  :init
-  (eglot-tempel-mode t))
-
 (use-package eglot
   :ensure t
-  :bind (("M-RET" . eglot-code-actions))
+  :requires yasnippet
+  :bind (("M-RET" . eglot-code-actions)
+         :map eglot-mode-map
+         ("C-c r" . 'eglot-rename)
+         ("C-c x" . 'eglot-code-action-extract)
+         ("C-c o" . 'eglot-code-action-organize-imports)
+         ("C-c d" . 'eldoc))
   :init
   (setq completion-category-overrides '((eglot (styles orderless))))
   (add-hook 'eglot-managed-mode-hook
@@ -530,17 +532,6 @@
   (add-hook 'scheme-mode-hook #'paredit-mode)
   (add-hook 'scheme-mode-hook #'rainbow-delimiters-mode))
 
-;; Fennel
-(use-package fennel-mode
-  :config
-  (add-hook 'fennel-mode-hook #'paredit-mode)
-  (add-hook 'fennel-mode-hook #'rainbow-delimiters-mode)
-  ;; (add-hook 'fennel-mode-hook #'fennel-proto-repl-minor-mode)
-  (add-hook 'fennel-mode-hook
-            (lambda ()
-              (add-to-list 'eglot-server-programs '(fennel-mode . ("fennel-ls")))
-              (eglot-ensure))))
-
 ;; Clojure
 (use-package flymake-kondor
   :ensure t)
@@ -573,7 +564,7 @@
   (add-to-list 'eglot-java-eclipse-jdt-args
                (concat  "-javaagent:"
                         (file-name-concat (xdg-data-home)
-                                          "lombok"
+                                          "java"
                                           "lombok.jar"))))
 
 ;; Other languages --------------
@@ -681,4 +672,8 @@
                         :models '(deepseek-r1:8b llama3.1:8b)))
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 ;;; Experimental end
-(put 'downcase-region 'disabled nil)
+(use-package copilot
+  :ensure t
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main"))
