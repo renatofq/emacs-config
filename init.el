@@ -479,35 +479,6 @@
   :config (difftastic-bindings-mode))
 
 ;;;; Programming settings ------------------------------------------------
-;; Eglot
-(use-package eglot
-  :ensure t
-  :requires yasnippet
-  :bind (("M-RET" . eglot-code-actions)
-         :map eglot-mode-map
-         ("C-c r" . 'eglot-rename)
-         ("C-c x" . 'eglot-code-action-extract)
-         ("C-c o" . 'eglot-code-action-organize-imports)
-         ("C-c d" . 'eldoc))
-  :init
-  (setq completion-category-overrides '((eglot (styles orderless))))
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (eglot-inlay-hints-mode -1)))
-  :config
-  (setq eglot-report-progress nil)
-  (add-to-list 'eglot-server-programs
-               '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
-                 . ("clangd"
-                    "-j=4"
-                    "--log=error"
-                    "--malloc-trim"
-                    "--background-index"
-                    "--clang-tidy"
-                    "--cross-file-rename"
-                    "--completion-style=detailed"
-                    "--pch-storage=memory"))))
-
 ;; Lisp family ----------------
 (use-package paredit
   :ensure t
@@ -555,12 +526,53 @@
         cider-repl-display-help-banner nil))
 
 ;; Java -------------------------
+;; Eglot
+(use-package eglot
+  :ensure t
+  :requires yasnippet
+  :init
+  (setq completion-category-overrides '((eglot (styles orderless))))
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (eglot-inlay-hints-mode -1)))
+  :config
+  (define-key eglot-mode-map (kbd "M-RET") 'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c x") 'eglot-code-action-extract)
+  (define-key eglot-mode-map (kbd "C-c o") 'eglot-code-action-organize-imports)
+  (define-key eglot-mode-map (kbd "C-c d") 'eldoc)
+  (setq eglot-report-progress nil)
+  (add-to-list 'eglot-server-programs
+               '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
+                 . ("clangd"
+                    "-j=4"
+                    "--log=error"
+                    "--malloc-trim"
+                    "--background-index"
+                    "--clang-tidy"
+                    "--cross-file-rename"
+                    "--completion-style=detailed"
+                    "--pch-storage=memory"))))
+
 (use-package eglot-java
   :ensure t
   :init
   (setq eglot-java-server-install-dir
-        (file-name-concat (xdg-data-home) "eclipse.jdt.ls"))
+        (expand-file-name "eclipse.jdt.ls" (xdg-data-home))
+        eglot-java-junit-platform-console-standalone-jar
+        (file-name-concat (xdg-data-home) "java" "junit-platform-console-standalone.jar")
+        eglot-java-user-init-opts-fn
+        'user/eglot-java-init-opts)
+  (defun user/eglot-java-init-opts (server eglot-java-eclipse-jdt)
+    `(:bundles [,(file-name-concat (xdg-data-home)
+                                   "java"
+                                   "com.microsoft.java.debug.plugin.jar")]
+      :workspaceFolders [,(concat  "file://" (expand-file-name "projetos" "~"))]
+      :settings (:java (:home "/usr/lib/jvm/default-java"))
+      :extendedClientCapabilities (:classFileContentsSupport t)))
   :config
+  (define-key eglot-java-mode-map (kbd "C-c t") 'eglot-java-run-test)
+  (define-key eglot-java-mode-map (kbd "C-c p t") 'eglot-java-project-build-task)
   (add-to-list 'eglot-java-eclipse-jdt-args
                (concat  "-javaagent:"
                         (file-name-concat (xdg-data-home)
