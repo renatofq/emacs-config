@@ -129,7 +129,7 @@
   (setq major-mode-remap-alist
         '((json-mode . json-ts-mode)
           (yaml-mode . yaml-ts-mode)
-          (js2-mode . js-ts-mode)
+          (js-mode . typescript-ts-mode)
           (typescript-mode . typescript-ts-mode)
           (c-mode . c-ts-mode)
           (java-mode . java-ts-mode)
@@ -537,10 +537,10 @@
               (eglot-inlay-hints-mode -1)))
   :config
   (define-key eglot-mode-map (kbd "M-RET") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename)
-  (define-key eglot-mode-map (kbd "C-c x") 'eglot-code-action-extract)
-  (define-key eglot-mode-map (kbd "C-c o") 'eglot-code-action-organize-imports)
-  (define-key eglot-mode-map (kbd "C-c d") 'eldoc)
+  (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c l x") 'eglot-code-action-extract)
+  (define-key eglot-mode-map (kbd "C-c l o") 'eglot-code-action-organize-imports)
+  (define-key eglot-mode-map (kbd "C-c l d") 'eldoc)
   (setq eglot-report-progress nil)
   (add-to-list 'eglot-server-programs
                '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
@@ -568,11 +568,12 @@
                                    "java"
                                    "com.microsoft.java.debug.plugin.jar")]
       :workspaceFolders [,(concat  "file://" (expand-file-name "projetos" "~"))]
-      :settings (:java (:home "/usr/lib/jvm/default-java"))
+      :settings (:java (:home ,(file-truename "/usr/lib/jvm/default-java")))
       :extendedClientCapabilities (:classFileContentsSupport t)))
   :config
-  (define-key eglot-java-mode-map (kbd "C-c t") 'eglot-java-run-test)
-  (define-key eglot-java-mode-map (kbd "C-c p t") 'eglot-java-project-build-task)
+  (define-key eglot-java-mode-map (kbd "C-c l t") 'eglot-java-run-test)
+  (define-key eglot-java-mode-map (kbd "C-c l n") 'eglot-java-file-new)
+  (define-key eglot-java-mode-map (kbd "C-c l b") 'eglot-java-project-build-task)
   (add-to-list 'eglot-java-eclipse-jdt-args
                (concat  "-javaagent:"
                         (file-name-concat (xdg-data-home)
@@ -587,11 +588,6 @@
 (use-package typescript-ts-mode
   :config
   (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
-
-(use-package js-ts-mode
-  :mode "\\.js\\'"
-  :init
-  (add-hook 'js-ts-mode-hook 'eglot-ensure))
 
 (use-package nvm
   :config
