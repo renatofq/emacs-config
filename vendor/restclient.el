@@ -501,7 +501,7 @@ The buffer contains the raw HTTP response sent by the server."
     (restclient-replace-all-in-string vars entity)))
 
 (defun restclient-parse-hook (cb-type args-offset args)
-  (if-let ((handler (assoc cb-type restclient-result-handlers)))
+  (if-let* ((handler (assoc cb-type restclient-result-handlers)))
       (funcall (cadr handler) args args-offset)
     `(lambda ()
        (message "Unknown restclient hook type %s" ,cb-type))))

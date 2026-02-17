@@ -372,7 +372,8 @@
               (vconcat consult-narrow-key "?")
               #'consult-narrow-help))
 
-(use-package vundo)
+(use-package vundo
+  :ensure t)
 
 ;; which-key: shows a popup of available keybindings when typing a long key
 ;; sequence (e.g. C-x ...)
@@ -672,7 +673,7 @@
 ;;; init.el ends here
 ;; Experimental
 (use-package gptel
-  :init
+  :config
   (setq gptel-model 'deepseek-r1:8b
         gptel-backend (gptel-make-ollama "local ollama"
                         :host "localhost:11434"
